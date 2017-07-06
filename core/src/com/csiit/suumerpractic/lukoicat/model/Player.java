@@ -63,7 +63,7 @@ public class Player extends Actor {
     }
 
     public void update(float delta) {
-        if (Math.abs(mouseX -getX())<SPEED && Math.abs(mouseY - getY())<SPEED) {
+        if (Math.abs(mouseX -getX())<=getWidth() && Math.abs(mouseY - getY())<SPEED) {
             mouseY = -1;
             mouseX = -1;
             return;
@@ -106,7 +106,7 @@ public class Player extends Actor {
         if (x < getX()) {
             leftPressed();
         }
-        if (x > (getPosition().x + getWidth()))
+        if (x > (getPosition().x + width) * world.ppuX)
             rightPressed();
         processInput();
     }
