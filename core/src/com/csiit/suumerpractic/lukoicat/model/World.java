@@ -23,8 +23,8 @@ public class World extends Stage {
     //Array<Brick> bricks = new Array<Brick>();
     public float ppuX;
     public float ppuY;
-    Actor selectedActor = null;
-    Map<String, TextureRegion> textureRegions;
+    public Actor selectedActor = null;
+    public Map<String, TextureRegion> textureRegions;
 
     public World(int x, int y, boolean b, SpriteBatch spriteBatch, Map<String, TextureRegion> textureRegions) {
         super.getViewport().update(x, y, b);
@@ -33,9 +33,8 @@ public class World extends Stage {
         ppuY = getHeight() / CAMERA_HEIGHT;
         addActor(new Player(new Vector2(4, 2), this));
         addActor(new Player(new Vector2(4, 4), this));
-        addActor(new FirstZoombie(this,new Vector2(6,3)));
 
-       // generateZoombieOnPosition(1,1);
+        generateZoombieOnPosition(1,1);
 
         //addActor(new Brick(new Vector2(0,1), this));
         //addActor(new Brick(new Vector2(5,6), this));
@@ -51,7 +50,7 @@ public class World extends Stage {
         for (Actor actor : this.getActors()) {
             if (actor instanceof Player)
                 ((Player) actor).update(delta);
-            else ((FirstZoombie) actor).update(delta);
+            else ((com.csiit.suumerpractic.lukoicat.model.zoombie.FirstZoombie) actor).update(delta);
 
         }
     }
@@ -86,7 +85,7 @@ public class World extends Stage {
     }
 
     //создание зомби
- /*   public void generateZoombieOnPosition(int count, int type) {
+   public void generateZoombieOnPosition(int count, int type) {
         int x = 0, y = 0;
 
         for (int i = 0; i < count; ++i) {
@@ -96,12 +95,12 @@ public class World extends Stage {
 
             switch (type) {
                 case 1:
-                    zoombie.add(new FirstZoombie(this, new Vector2(x, y)));
+                    addActor(new com.csiit.suumerpractic.lukoicat.model.zoombie.FirstZoombie(this,new Vector2(x,y)));
                     break;
             }
         }
     }
-*/
+
     /**
      * Передвижение выбранного актера по параметрам
      *
