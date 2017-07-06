@@ -63,13 +63,14 @@ public class Player extends Actor {
     }
 
     public void update(float delta) {
+        if (Math.abs(mouseX -getX())<SPEED && Math.abs(mouseY - getY())<SPEED) {
+            mouseY = -1;
+            mouseX = -1;
+            return;
+        }
         position.add(velocity.scl(delta));
         setX(position.x * world.ppuX);
         setY(position.y * world.ppuY);
-        if (mouseX == getX() && mouseY == getY()) {
-            mouseY = -1;
-            mouseX = -1;
-        }
         if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX < getX() || mouseX > getX()))
             ChangeNavigation(mouseX, mouseY);
     }
