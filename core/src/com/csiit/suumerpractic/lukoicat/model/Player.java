@@ -106,8 +106,7 @@ public class Player extends Actor {
         if (x < getX()) {
             leftPressed();
         }
-
-        if (x > (getPosition().x + width) * world.ppuX)
+        if (x > (getPosition().x + getWidth()))
             rightPressed();
         processInput();
     }
