@@ -13,8 +13,4 @@ public class MyGame extends Game {
 		setScreen(game);
 	}
 
-	@Override
-	public void resize(int width, int height) {
-
-	}
 }
