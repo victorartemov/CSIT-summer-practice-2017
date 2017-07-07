@@ -11,6 +11,8 @@ import java.util.Map;
 
 public class Player extends Actor {
 
+    private int countLife; //кол-во жизней
+
     public enum State {
         NONE, WALKING, DEAD
     }
@@ -48,6 +50,7 @@ public class Player extends Actor {
 
     public Player(Vector2 position, World world) {
 
+        this.countLife = 10;
         this.world = world;
         this.position = position;
         setHeight(height * world.ppuY);
@@ -62,18 +65,40 @@ public class Player extends Actor {
         });
     }
 
-    public void update(float delta) {
-        if (Math.abs(mouseX -getX())<=getWidth() && Math.abs(mouseY - getY())<SPEED) {
-            mouseY = -1;
-            mouseX = -1;
-            return;
-        }
-        position.add(velocity.scl(delta));
-        setX(position.x * world.ppuX);
-        setY(position.y * world.ppuY);
-        if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX < getX() || mouseX > getX()))
-            ChangeNavigation(mouseX, mouseY);
+    public int getCountLife() {
+        return countLife;
     }
+
+    public void setCountLife(int countLife) {
+        this.countLife = countLife;
+    }
+
+    //Получить урон
+    public void toDamage(){
+        countLife--;
+    }
+
+    public void update(float delta) {
+       if(direction.get(Keys.LEFT)) {
+           if (Math.abs(mouseX -getX())<SPEED && Math.abs(mouseY - getY())<SPEED) {
+               mouseY = -1;
+               mouseX = -1;
+               return;
+           }
+       }
+       else {
+           if (Math.abs(mouseX -getX())<=getWidth() && Math.abs(mouseY - getY())<SPEED) {
+               mouseY = -1;
+               mouseX = -1;
+               return;
+           }
+       }
+       position.add(velocity.scl(delta));
+       setX(position.x * world.ppuX);
+       setY(position.y * world.ppuY);
+       if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX < getX() || mouseX > getX()))
+           ChangeNavigation(mouseX, mouseY);
+   }
 
     @Override
     public void draw(Batch batch, float parentAlfa) {

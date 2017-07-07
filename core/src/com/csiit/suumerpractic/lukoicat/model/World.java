@@ -20,7 +20,6 @@ public class World extends Stage {
     public static float CAMERA_HEIGHT = 5f;
    // Array<Zoombie> zoombie = new Array<Zoombie>();
 
-    //Array<Brick> bricks = new Array<Brick>();
     public float ppuX;
     public float ppuY;
     public Actor selectedActor = null;
@@ -32,12 +31,10 @@ public class World extends Stage {
         ppuX = getWidth() / CAMERA_WIDTH;
         ppuY = getHeight() / CAMERA_HEIGHT;
         addActor(new Player(new Vector2(4, 2), this));
-        addActor(new Player(new Vector2(4, 4), this));
+        //addActor(new Player(new Vector2(4, 4), this));
 
         generateZoombieOnPosition(1,1);
 
-        //addActor(new Brick(new Vector2(0,1), this));
-        //addActor(new Brick(new Vector2(5,6), this));
     }
 
     public Player getSelectedActor() {
@@ -51,9 +48,9 @@ public class World extends Stage {
             if (actor instanceof Player)
                 ((Player) actor).update(delta);
             else ((com.csiit.suumerpractic.lukoicat.model.zoombie.FirstZoombie) actor).update(delta);
-
         }
     }
+
 
     public void setPP(float x, float y) {
         ppuX = x;
@@ -71,7 +68,6 @@ public class World extends Stage {
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         resetSelected();
-
         return true;
     }
 

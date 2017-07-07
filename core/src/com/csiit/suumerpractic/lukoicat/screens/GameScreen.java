@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.csiit.suumerpractic.lukoicat.MyGame;
+import com.csiit.suumerpractic.lukoicat.model.Player;
 import com.csiit.suumerpractic.lukoicat.model.World;
 
 import java.util.HashMap;
@@ -18,14 +20,21 @@ import java.util.Map;
  */
 public class GameScreen implements Screen {
 
+    final MyGame game;
+
     public OrthographicCamera cam;
     public World world;
     private SpriteBatch spriteBatch;
-    Texture texture;
+    Texture textureMen;
+    Texture textureMonster;
     public Map<String, TextureRegion> textureRegions = new HashMap<String, TextureRegion>();
 
     public int width;
     public int height;
+
+    public GameScreen(final MyGame game) {
+        this.game = game;
+    }
 
     @Override
     public void show() {
@@ -38,10 +47,14 @@ public class GameScreen implements Screen {
     }
 
     private void loadTextures() {
-        texture = new Texture(Gdx.files.internal("men.png"));
-        TextureRegion tmp[][] = TextureRegion.split(texture, texture.getWidth(), texture.getHeight());
+        textureMen = new Texture(Gdx.files.internal("men.png"));
+        TextureRegion tmp[][] = TextureRegion.split(textureMen, textureMen.getWidth(), textureMen.getHeight());
         textureRegions.put("player", tmp[0][0]);
-        //  texture  = new Texture(Gdx.files.internal("atlas.png"));
+
+        textureMonster = new Texture(Gdx.files.internal("monster.png"));
+        TextureRegion textureMonst[][] = TextureRegion.split(textureMonster, textureMonster.getWidth(), textureMonster.getHeight());
+        textureRegions.put("monster", textureMonst[0][0]);
+
         //  //Получение регионов. Атлас состоит из 4 изображений одинакового размера
         //  TextureRegion tmp[][] = TextureRegion.split(texture, texture.getWidth() / 2, texture.getHeight() / 2);
         //  textureRegions.put("player", tmp[0][0]);
@@ -71,6 +84,10 @@ public class GameScreen implements Screen {
 
         world.update(delta);
         world.draw();
+
+        game.batch.begin();
+        game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
+        game.batch.end();
     }
 
     @Override

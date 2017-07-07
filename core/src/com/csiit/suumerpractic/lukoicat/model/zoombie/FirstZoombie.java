@@ -67,7 +67,7 @@ public class FirstZoombie extends Actor  {
     }
 
     public void draw(Batch batch, float parentAlfa) {
-        batch.draw(world.textureRegions.get("player"), getX(), getY(), getWidth(), getHeight());
+        batch.draw(world.textureRegions.get("monster"), getX(), getY(), getWidth(), getHeight());
         batch.setColor(1, 1, 1, 1);
     }
 
