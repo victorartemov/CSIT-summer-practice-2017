@@ -24,8 +24,8 @@ public class FirstZoombie extends Actor  {
     private final float SIZE = 0.9f;
     private final float Radius = 2f;
     private final float SPEED = 3.0f;
-    private final float height = 1.0f;
-    private final float width = 0.4f;
+    private final float height = 0.7f;
+    private final float width = 0.3f;
     private World world;
     private Vector2 position;
     private Vector2 velocity;

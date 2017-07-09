@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class World extends Stage {
 
+
     public static float CAMERA_WIDTH = 8f;
     public static float CAMERA_HEIGHT = 5f;
    // Array<Zoombie> zoombie = new Array<Zoombie>();
@@ -51,7 +52,6 @@ public class World extends Stage {
         }
     }
 
-
     public void setPP(float x, float y) {
         ppuX = x;
         ppuY = y;
@@ -85,10 +85,8 @@ public class World extends Stage {
         int x = 0, y = 0;
 
         for (int i = 0; i < count; ++i) {
-
             x = 1;
             y = 4;
-
             switch (type) {
                 case 1:
                     addActor(new com.csiit.suumerpractic.lukoicat.model.zoombie.FirstZoombie(this,new Vector2(x,y)));

@@ -5,12 +5,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.csiit.suumerpractic.lukoicat.animation.Animator;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Player extends Actor {
 
+    Animator animator;
     private int countLife; //кол-во жизней
 
     public enum State {
@@ -50,6 +52,10 @@ public class Player extends Actor {
 
     public Player(Vector2 position, World world) {
 
+        animator = new Animator();
+        animator.create();
+        animator.setWorld(world);
+        animator.setSize(getWidth(), getHeight());
         this.countLife = 10;
         this.world = world;
         this.position = position;
@@ -103,9 +109,12 @@ public class Player extends Actor {
     @Override
     public void draw(Batch batch, float parentAlfa) {
         if (this.equals(world.selectedActor)) {
-            batch.setColor(0.5f, 0.5f, 0.5f, 0.5f);
+            batch.setColor(0.9f, 0.9f, 0.9f, 0.9f);
         }
-        batch.draw(world.textureRegions.get("player"), getX(), getY(), getWidth(), getHeight());
+        animator.setPositionMen(getX(), getY());
+        animator.render(batch);
+       // batch.draw(world.textureRegions);
+        //batch.draw(world.textureRegions.get("player"), getX(), getY(), getWidth(), getHeight());
         batch.setColor(1, 1, 1, 1);
     }
 
