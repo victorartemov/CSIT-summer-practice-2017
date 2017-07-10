@@ -2,6 +2,7 @@ package com.csiit.suumerpractic.lukoicat.model.zombie;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.csiit.suumerpractic.lukoicat.model.World;
@@ -10,12 +11,9 @@ import com.csiit.suumerpractic.lukoicat.model.player.Player;
 
 import java.util.Random;
 
-/**
- * Created by Рената on 06.07.2017.
- */
 public class Zombie extends Actor implements Constant {
 
-   // private final float SIZE;
+    private final float SIZE;
     private final float Radius;
     private final float SPEED;
     private final float height = 1.0f;
@@ -34,7 +32,7 @@ public class Zombie extends Actor implements Constant {
     public Zombie(World world, Vector2 vector2, float SIZE, float Radius, float SPEED, int life, String name) {
 
         this.name = name;
-       // this.SIZE = SIZE;
+        this.SIZE = SIZE;
         this.Radius = Radius;
         this.SPEED = SPEED;
         this.life = life;
@@ -57,16 +55,6 @@ public class Zombie extends Actor implements Constant {
         getVelocity().y = SPEED;
         setFirstDirection();
     }
-
-    //новый конструктор
-    public Zombie(World world, Vector2 vector2) {
-        this.world = world;
-        this.position = vector2;
-        this.name = "firstZoombie";
-        this.Radius = 10;
-        this.SPEED = 1;
-    }
-
 
     public void update(float delta) {
         changeDirection(delta);
@@ -158,7 +146,7 @@ public class Zombie extends Actor implements Constant {
 
         }
     }
-    
+
     private boolean canKill() {
 
         int bX = Math.round(world.getSelectedActor().getPosition().x);

@@ -7,8 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 import com.csiit.suumerpractic.lukoicat.model.player.Player;
-import com.csiit.suumerpractic.lukoicat.model.zoombie.Zoombie;
-
+import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
 
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class World extends Stage implements Constant {
         ppuY = getHeight() / CAMERA_HEIGHT;
         addActor(new Player(new Vector2(4, 2), this));
 
-        generateZoombie(1, ZoombieType.NORMAL);
+        generateZombie(1, ZombieType.NORMAL);
 
     }
 
@@ -49,7 +48,7 @@ public class World extends Stage implements Constant {
         for (Actor actor : this.getActors()) {
             if (actor instanceof Player)
                 ((Player) actor).update(delta);
-            else ((Zoombie) actor).update(delta);
+            else ((Zombie) actor).update(delta);
         }
     }
 
@@ -82,9 +81,9 @@ public class World extends Stage implements Constant {
     }
 
     //создание зомби
-    public void generateZoombie(int count, ZoombieType zoombieType) {
+    public void generateZombie(int count, ZombieType zombieType) {
         for (int i = 0; i < count; i++) {
-            addActor(zoombieType.choseZoombie(this, CAMERA_WIDTH, CAMERA_HEIGHT));
+            addActor(zombieType.choseZombie(this, CAMERA_WIDTH, CAMERA_HEIGHT));
         }
 
     }
@@ -112,3 +111,4 @@ public class World extends Stage implements Constant {
     }
 
 }
+

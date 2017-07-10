@@ -1,4 +1,4 @@
-package com.csiit.suumerpractic.lukoicat.model.prize;
+package com.csiit.suumerpractic.lukoicat.prize;
 
 import java.util.Timer;
 import java.util.TimerTask;

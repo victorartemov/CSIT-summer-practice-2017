@@ -1,4 +1,4 @@
-package com.csiit.suumerpractic.lukoicat.model.prize;
+package com.csiit.suumerpractic.lukoicat.prize;
 
 /**
  * Created by Рената on 07.07.2017.
