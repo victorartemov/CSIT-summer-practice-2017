@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.csiit.suumerpractic.lukoicat.animation.AnimatorMen;
 import com.csiit.suumerpractic.lukoicat.model.World;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Player extends Actor implements Constant {
+
+    AnimatorMen animatorMen;
 
     public static final float SPEED = 1f;
     public static final float height = 1.0f;
@@ -28,6 +31,7 @@ public class Player extends Actor implements Constant {
 
     //для выч. движения
     Vector2 velocity = new Vector2();
+
 
     State state = State.NONE;
     // boolean facingLeft = true;
@@ -46,6 +50,10 @@ public class Player extends Actor implements Constant {
 
     public Player(Vector2 position, World world) {
 
+        this.animatorMen = new AnimatorMen();
+        animatorMen.create();
+        animatorMen.setWorld(world);
+        animatorMen.setSize(getWidth(), getHeight());
         this.countLife = 10;
         this.weapone = Weapone.NONE;
         this.world = world;
@@ -62,7 +70,7 @@ public class Player extends Actor implements Constant {
         });
     }
 
-    public void killZoombie() {
+    public void killZombie() {
 
     }
 
@@ -118,10 +126,11 @@ public class Player extends Actor implements Constant {
     @Override
     public void draw(Batch batch, float parentAlfa) {
         if (this.equals(world.selectedActor)) {
-            batch.setColor(0.5f, 0.5f, 0.5f, 0.5f);
+            batch.setColor(0.9f, 0.9f, 0.9f, 0.9f);
         }
-        batch.draw(world.textureRegions.get("player"), getX(), getY(), getWidth(), getHeight());
-        batch.setColor(1, 1, 1, 1);
+        animatorMen.setPositionMen(getX(), getY());
+        animatorMen.render(batch);
+        //batch.setColor(1, 1, 1, 1);
     }
 
     //Процедура проверки. Если точка в прямоугольнике актёра, возвращаем актёра.
