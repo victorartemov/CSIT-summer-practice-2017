@@ -2,7 +2,7 @@ package com.csiit.suumerpractic.lukoicat.model.constant;
 
 import com.badlogic.gdx.math.Vector2;
 import com.csiit.suumerpractic.lukoicat.model.World;
-import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
+import com.csiit.suumerpractic.lukoicat.model.zoombie.Zoombie;
 
 import java.util.Random;
 
@@ -43,15 +43,16 @@ public interface Constant {
     enum ZoombieType {
         NORMAL, BOSS;
 
-        public Zombie choseZombie(World world, float width, float height) {
-            Zombie zombie = null;
-            Vector2 vector2 = new Vector2(new Random((int)width).nextFloat(), new Random((int)height).nextFloat());
+        public Zoombie choseZoombie(World world, float width, float hight) {
+            Zoombie zoombie = null;
+            Vector2 vector2 = new Vector2(new Random((int)width).nextFloat(), new Random((int)hight).nextFloat());
             switch (this) {
                 case NORMAL:
-                    zombie = new Zombie(world, vector2, 0.9f, 2, 2, 50, "monster");
+                    zoombie = new Zoombie(world, vector2, 0.9f, 2, 2, 50, "monster");
                     break;
+
             }
-            return zombie;
+            return zoombie;
         }
     }
 }

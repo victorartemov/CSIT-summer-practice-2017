@@ -5,8 +5,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 import com.csiit.suumerpractic.lukoicat.model.player.Player;
-import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
+import com.csiit.suumerpractic.lukoicat.model.zoombie.Zoombie;
 
 
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Map;
  * Created by Juli on 04.07.2017.
  */
 
-public class World extends Stage {
+public class World extends Stage implements Constant {
 
 
     public static float CAMERA_WIDTH = 8f;
@@ -33,9 +34,8 @@ public class World extends Stage {
         ppuX = getWidth() / CAMERA_WIDTH;
         ppuY = getHeight() / CAMERA_HEIGHT;
         addActor(new Player(new Vector2(4, 2), this));
-        //addActor(new Player(new Vector2(4, 4), this));
 
-        generateZoombieOnPosition(1,1);
+        generateZoombie(1, ZoombieType.NORMAL);
 
     }
 
@@ -49,7 +49,7 @@ public class World extends Stage {
         for (Actor actor : this.getActors()) {
             if (actor instanceof Player)
                 ((Player) actor).update(delta);
-            else ((Zombie) actor).update(delta);
+            else ((Zoombie) actor).update(delta);
         }
     }
 
@@ -82,19 +82,13 @@ public class World extends Stage {
     }
 
     //создание зомби
-   public void generateZoombieOnPosition(int count, int type) {
-        int x = 0, y = 0;
+    public void generateZoombie(int count, ZoombieType zoombieType) {
+        for (int i = 0; i < count; i++) {
+            addActor(zoombieType.choseZoombie(this, CAMERA_WIDTH, CAMERA_HEIGHT));
+        }
 
-       //for (int i = 0; i < count; ++i) {
-       //    x = 1;
-       //    y = 4;
-       //    switch (type) {
-       //        case 1:
-       //            addActor(new Zombie(this, new Vector2(x,y)));
-       //            break;
-       //    }
-       //}
     }
+
 
     /**
      * Передвижение выбранного актера по параметрам
