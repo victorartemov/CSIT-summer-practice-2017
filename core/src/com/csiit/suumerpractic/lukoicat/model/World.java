@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.csiit.suumerpractic.lukoicat.model.player.Player;
+import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
 
 
 import java.util.Map;
@@ -19,7 +21,6 @@ public class World extends Stage {
 
     public static float CAMERA_WIDTH = 8f;
     public static float CAMERA_HEIGHT = 5f;
-   // Array<Zoombie> zoombie = new Array<Zoombie>();
 
     public float ppuX;
     public float ppuY;
@@ -48,7 +49,7 @@ public class World extends Stage {
         for (Actor actor : this.getActors()) {
             if (actor instanceof Player)
                 ((Player) actor).update(delta);
-            else ((com.csiit.suumerpractic.lukoicat.model.zoombie.FirstZoombie) actor).update(delta);
+            else ((Zombie) actor).update(delta);
         }
     }
 
@@ -84,15 +85,15 @@ public class World extends Stage {
    public void generateZoombieOnPosition(int count, int type) {
         int x = 0, y = 0;
 
-        for (int i = 0; i < count; ++i) {
-            x = 1;
-            y = 4;
-            switch (type) {
-                case 1:
-                    addActor(new com.csiit.suumerpractic.lukoicat.model.zoombie.FirstZoombie(this,new Vector2(x,y)));
-                    break;
-            }
-        }
+       //for (int i = 0; i < count; ++i) {
+       //    x = 1;
+       //    y = 4;
+       //    switch (type) {
+       //        case 1:
+       //            addActor(new Zombie(this, new Vector2(x,y)));
+       //            break;
+       //    }
+       //}
     }
 
     /**

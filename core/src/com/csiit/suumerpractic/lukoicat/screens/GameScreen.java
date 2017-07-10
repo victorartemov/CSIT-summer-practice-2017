@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.csiit.suumerpractic.lukoicat.MyGame;
-import com.csiit.suumerpractic.lukoicat.model.Player;
+import com.csiit.suumerpractic.lukoicat.model.player.Player;
 import com.csiit.suumerpractic.lukoicat.model.World;
 
 import java.util.HashMap;
@@ -32,8 +32,6 @@ public class GameScreen implements Screen {
 
     public int width;
     public int height;
-
-
 
     public GameScreen(final MyGame game) {
         this.game = game;

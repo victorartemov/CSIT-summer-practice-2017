@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.csiit.suumerpractic.lukoicat.model.World;
 
-public class Animator implements ApplicationListener{
+public class AnimatorMen implements ApplicationListener{
 
     private static final int FRAME_ROWS = 12;
 
@@ -23,8 +23,7 @@ public class Animator implements ApplicationListener{
 
 
     World world;
-    Animation walkAnimation;
-    //нужно сделать анимации - идет вправо, идет влево?
+    Animation walkDownAnimation;
 
     Texture walkSheet;
     TextureRegion[] walkFrames;
@@ -47,7 +46,7 @@ public class Animator implements ApplicationListener{
        for (int i = 1; i < 3; i++) {
                walkFrames[index++] = tmp[i][0];
            }
-        walkAnimation = new Animation(0.25f, walkFrames);
+        walkDownAnimation = new Animation(0.25f, walkFrames);
         spriteBatch = new SpriteBatch();
         stateTime = 0f;
     }
@@ -59,14 +58,13 @@ public class Animator implements ApplicationListener{
 
     @Override
     public void render() {
-
     }
 
 
     public void render(Batch batch) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
-        currentFrame = (TextureRegion) walkAnimation.getKeyFrame(stateTime, true);
+        currentFrame = (TextureRegion) walkDownAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, x, y, 42,100);
    }
 

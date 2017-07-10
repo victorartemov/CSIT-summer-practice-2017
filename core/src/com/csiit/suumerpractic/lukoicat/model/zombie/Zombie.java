@@ -1,4 +1,4 @@
-package com.csiit.suumerpractic.lukoicat.model.zoombie;
+package com.csiit.suumerpractic.lukoicat.model.zombie;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,9 +13,9 @@ import java.util.Random;
 /**
  * Created by Рената on 06.07.2017.
  */
-public class Zoombie extends Actor implements Constant {
+public class Zombie extends Actor implements Constant {
 
-    private final float SIZE;
+   // private final float SIZE;
     private final float Radius;
     private final float SPEED;
     private final float height = 1.0f;
@@ -31,10 +31,10 @@ public class Zoombie extends Actor implements Constant {
     private String name;
 
 
-    public Zoombie(World world, Vector2 vector2, float SIZE, float Radius, float SPEED, int life, String name) {
+    public Zombie(World world, Vector2 vector2, float SIZE, float Radius, float SPEED, int life, String name) {
 
         this.name = name;
-        this.SIZE = SIZE;
+       // this.SIZE = SIZE;
         this.Radius = Radius;
         this.SPEED = SPEED;
         this.life = life;
@@ -57,6 +57,16 @@ public class Zoombie extends Actor implements Constant {
         getVelocity().y = SPEED;
         setFirstDirection();
     }
+
+    //новый конструктор
+    public Zombie(World world, Vector2 vector2) {
+        this.world = world;
+        this.position = vector2;
+        this.name = "firstZoombie";
+        this.Radius = 10;
+        this.SPEED = 1;
+    }
+
 
     public void update(float delta) {
         changeDirection(delta);
