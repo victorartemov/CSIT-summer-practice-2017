@@ -27,6 +27,8 @@ public class GameScreen implements Screen {
     private SpriteBatch spriteBatch;
     Texture textureMen;
     Texture textureMonster;
+    Texture textureGun;
+
     public Map<String, TextureRegion> textureRegions = new HashMap<String, TextureRegion>();
 
     public int width;
@@ -54,6 +56,10 @@ public class GameScreen implements Screen {
         textureMonster = new Texture(Gdx.files.internal("monster.png"));
         TextureRegion textureMonst[][] = TextureRegion.split(textureMonster, textureMonster.getWidth(), textureMonster.getHeight());
         textureRegions.put("monster", textureMonst[0][0]);
+
+        textureGun = new Texture(Gdx.files.internal("badlogic.jpg"));
+        TextureRegion textureGu[][] = TextureRegion.split(textureGun, textureGun.getWidth(), textureGun.getHeight());
+        textureRegions.put("gun", textureGu[0][0]);
 
         //  //Получение регионов. Атлас состоит из 4 изображений одинакового размера
         //  TextureRegion tmp[][] = TextureRegion.split(texture, texture.getWidth() / 2, texture.getHeight() / 2);

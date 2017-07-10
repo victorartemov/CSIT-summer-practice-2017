@@ -1,8 +1,10 @@
 package com.csiit.suumerpractic.lukoicat.model.constant;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.csiit.suumerpractic.lukoicat.model.World;
 import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
+import com.csiit.suumerpractic.lukoicat.prize.Weapon;
 
 import java.util.Random;
 
@@ -17,35 +19,31 @@ public interface Constant {
     }
 
     enum State {
-        NONE, WALKING, DEAD
+        NONE, WALKING, DEAD, TAKEN
     }
 
-    enum Weapone {
+    enum Weapon {
         NONE, STONE, GUN;
-        private int damage;
 
-        public int damage() {
+
+        public com.csiit.suumerpractic.lukoicat.prize.Weapon makeWeapon(World world, float width, float height) {
+            com.csiit.suumerpractic.lukoicat.prize.Weapon weapon = null;
+            Vector2 vector2 = new Vector2(MathUtils.random(width), MathUtils.random(height));
             switch (this) {
                 case GUN:
-                    damage = 30;
-                    break;
-                case NONE:
-                    damage = 15;
-                    break;
-                case STONE:
-                    damage = 20;
+                    weapon = new com.csiit.suumerpractic.lukoicat.prize.Weapon(world, vector2, Weapon.GUN, "gun", 20);
                     break;
             }
-            return damage;
+            return weapon;
         }
     }
 
     enum ZombieType {
         NORMAL, BOSS;
 
-        public Zombie choseZombie(World world, float width, float hight) {
+        public Zombie choseZombie(World world, float width, float height) {
             Zombie zombie = null;
-            Vector2 vector2 = new Vector2(new Random((int)width).nextFloat(), new Random((int)hight).nextFloat());
+            Vector2 vector2 = new Vector2(MathUtils.random(width), MathUtils.random(height));
             switch (this) {
                 case NORMAL:
                     zombie = new Zombie(world, vector2, 0.9f, 2, 2, 50, "monster");
@@ -56,3 +54,4 @@ public interface Constant {
         }
     }
 }
+
