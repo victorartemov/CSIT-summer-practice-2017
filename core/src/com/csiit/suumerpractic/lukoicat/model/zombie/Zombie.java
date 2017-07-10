@@ -15,6 +15,7 @@ public class Zombie extends Actor implements Constant {
 
     private final float SIZE;
     private final float Radius;
+
     private final float SPEED;
     private final float height = 1.0f;
     private final float width = 0.4f;
