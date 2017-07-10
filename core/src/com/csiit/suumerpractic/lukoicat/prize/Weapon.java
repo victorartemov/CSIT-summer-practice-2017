@@ -1,4 +1,4 @@
-﻿package com.csiit.suumerpractic.lukoicat.prize;
+package com.csiit.suumerpractic.lukoicat.prize;
 
 //import suvitruf.classic.bomberman.view.WorldRenderer;
 
@@ -16,7 +16,6 @@ public class Weapon extends Actor implements Constant {
 
 
     private Rectangle bounds = new Rectangle();
-
     private Weapon weaponeType;
     private World world;
     private String name;
@@ -25,7 +24,7 @@ public class Weapon extends Actor implements Constant {
     private State state;
     private Vector2 position;
 
-    private final float height = 1.0f;
+    private final float height = 0.4f;
     private final float width = 0.4f;
 
     public Weapon(World world, Vector2 position, Weapon weaponeType, String name, int damage) {
@@ -57,7 +56,8 @@ public class Weapon extends Actor implements Constant {
 
     public void update(float delta) {
         if (state == State.TAKEN) {
-            //не отрисовывать объект
+            setWidth(0);
+            setHeight(0);
         }
 
     }

@@ -1,4 +1,4 @@
-﻿package com.csiit.suumerpractic.lukoicat.screens;
+package com.csiit.suumerpractic.lukoicat.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -23,7 +23,6 @@ public class GameScreen implements Screen {
     final MyGame game;
 
     public OrthographicCamera cam;
-
     public World world;
     private SpriteBatch spriteBatch;
     Texture textureMen;

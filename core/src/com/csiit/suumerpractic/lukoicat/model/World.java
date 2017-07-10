@@ -27,13 +27,16 @@ public class World extends Stage implements Constant {
     public float ppuY;
     public Actor selectedActor = null;
     public Map<String, TextureRegion> textureRegions;
+    Player player;
 
     public World(int x, int y, boolean b, SpriteBatch spriteBatch, Map<String, TextureRegion> textureRegions) {
         super.getViewport().update(x, y, b);
         this.textureRegions = textureRegions;
         ppuX = getWidth() / CAMERA_WIDTH;
         ppuY = getHeight() / CAMERA_HEIGHT;
-        addActor(new Player(new Vector2(4, 2), this));
+        player=new Player(new Vector2(4, 2), this);
+        selectedActor=player;
+        addActor(player);
 
         generateZombie(1, ZombieType.NORMAL);
          generateWeapon(Weapon.GUN);
@@ -80,9 +83,8 @@ public class World extends Stage implements Constant {
     public Actor hit(float x, float y, boolean touchable) {
         Actor actor = super.hit(x, y, touchable);
         //если выбрали актера
-        if (actor != null)
-            //запоминаем
-            selectedActor = actor;
+        if (actor instanceof Zombie)
+            player.killZombie((Zombie)actor);
         return actor;
     }
 

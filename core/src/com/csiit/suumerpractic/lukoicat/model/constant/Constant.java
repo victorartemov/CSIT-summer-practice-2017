@@ -46,7 +46,7 @@ public interface Constant {
             Vector2 vector2 = new Vector2(MathUtils.random(width), MathUtils.random(height));
             switch (this) {
                 case NORMAL:
-                    zombie = new Zombie(world, vector2, 0.9f, 2, 2, 50, "monster");
+                    zombie = new Zombie(world, vector2, 0.9f, 2, 2, 10, "monster");
                     break;
 
             }

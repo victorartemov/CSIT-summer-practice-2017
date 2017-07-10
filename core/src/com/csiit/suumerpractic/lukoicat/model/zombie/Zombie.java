@@ -15,7 +15,6 @@ public class Zombie extends Actor implements Constant {
 
     private final float SIZE;
     private final float Radius;
-
     private final float SPEED;
     private final float height = 1.0f;
     private final float width = 0.4f;
@@ -57,11 +56,21 @@ public class Zombie extends Actor implements Constant {
         setFirstDirection();
     }
 
+    public Actor hit(float x, float y, boolean touchable) {
+        return x > 0 && x < getWidth() && y > 0 && y < getHeight() ? this : null;
+    }
+
     public void update(float delta) {
-        changeDirection(delta);
-        position.add(velocity.scl(delta));
-        setX(position.x * world.ppuX);
-        setY(position.y * world.ppuY);
+        if (state == State.DEAD) {
+            setWidth(0);
+            setHeight(0);
+        } else {
+            changeDirection(delta);
+            position.add(velocity.scl(delta));
+            setX(position.x * world.ppuX);
+            setY(position.y * world.ppuY);
+        }
+
     }
 
     public void draw(Batch batch, float parentAlfa) {
@@ -237,4 +246,10 @@ public class Zombie extends Actor implements Constant {
     }
 
 
+    public void makeDamage() {
+        life--;
+        if (life == 0) {
+            state = State.DEAD;
+        }
+    }
 }
