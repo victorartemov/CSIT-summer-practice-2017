@@ -148,7 +148,7 @@ public class Zoombie extends Actor implements Constant {
 
         }
     }
-
+    
     private boolean canKill() {
 
         int bX = Math.round(world.getSelectedActor().getPosition().x);

@@ -43,7 +43,7 @@ public interface Constant {
     enum ZoombieType {
         NORMAL, BOSS;
 
-        public Zoombie choseZoombie(World world, float width, float hight) {
+        public Zoombie choseZoombie( World world, float width, float hight) {
             Zoombie zoombie = null;
             Vector2 vector2 = new Vector2(new Random((int)width).nextFloat(), new Random((int)hight).nextFloat());
             switch (this) {

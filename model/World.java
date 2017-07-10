@@ -10,6 +10,7 @@ import com.csiit.suumerpractic.lukoicat.model.player.Player;
 import com.csiit.suumerpractic.lukoicat.model.zoombie.Zoombie;
 
 
+import java.util.Collection;
 import java.util.Map;
 
 
@@ -20,11 +21,10 @@ import java.util.Map;
 public class World extends Stage implements Constant {
 
 
-    public static float CAMERA_WIDTH = 8f;
-    public static float CAMERA_HEIGHT = 5f;
-
-    public float ppuX;
-    public float ppuY;
+    public static final float CAMERA_WIDTH = 8f;
+    public static final float CAMERA_HEIGHT = 5f;
+    public static float ppuX;
+    public static float ppuY;
     public Actor selectedActor = null;
     public Map<String, TextureRegion> textureRegions;
 
@@ -33,9 +33,11 @@ public class World extends Stage implements Constant {
         this.textureRegions = textureRegions;
         ppuX = getWidth() / CAMERA_WIDTH;
         ppuY = getHeight() / CAMERA_HEIGHT;
-        addActor(new Player(new Vector2(4, 2), this));
 
-        generateZoombie(1, ZoombieType.NORMAL);
+        addActor(new Player(new Vector2(4, 2), this));
+        addActor(new Player(new Vector2(4, 4), this));
+
+        generateZoombieOnPosition(1, ZoombieType.NORMAL);
 
     }
 
@@ -50,6 +52,7 @@ public class World extends Stage implements Constant {
             if (actor instanceof Player)
                 ((Player) actor).update(delta);
             else ((Zoombie) actor).update(delta);
+
         }
     }
 
@@ -69,26 +72,27 @@ public class World extends Stage implements Constant {
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         resetSelected();
+
         return true;
     }
 
     public Actor hit(float x, float y, boolean touchable) {
         Actor actor = super.hit(x, y, touchable);
         //если выбрали актера
-        if (actor != null)
-            //запоминаем
+        if (actor != null) { //запоминаем
             selectedActor = actor;
+        }
+
         return actor;
     }
 
     //создание зомби
-    public void generateZoombie(int count, ZoombieType zoombieType) {
-        for (int i = 0; i < count; i++) {
-            addActor(zoombieType.choseZoombie(this, CAMERA_WIDTH, CAMERA_HEIGHT));
+    public void generateZoombieOnPosition(int count, ZoombieType zoombieType ) {
+        for(int i=0;i<count;i++){
+            addActor(zoombieType.choseZoombie(this, CAMERA_WIDTH,CAMERA_HEIGHT));
         }
 
     }
-
 
     /**
      * Передвижение выбранного актера по параметрам
@@ -97,8 +101,8 @@ public class World extends Stage implements Constant {
      * @param y
      */
     private void moveSelected(float x, float y) {
-        if (selectedActor != null && selectedActor instanceof Player) {
-            ((Player) selectedActor).ChangeNavigation(x, this.getHeight() - y);
+        if (selectedActor != null && selectedActor instanceof com.csiit.suumerpractic.lukoicat.model.player.Player) {
+            ((com.csiit.suumerpractic.lukoicat.model.player.Player) selectedActor).ChangeNavigation(x, this.getHeight() - y);
         }
     }
 
@@ -111,4 +115,16 @@ public class World extends Stage implements Constant {
         }
     }
 
+
+    public float getPpuX() {
+        return ppuX;
+    }
+
+    public float getPpuY() {
+        return ppuY;
+    }
+
+    public Map<String, TextureRegion> getTextureRegions() {
+        return textureRegions;
+    }
 }
