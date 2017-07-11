@@ -2,12 +2,20 @@ package com.csiit.suumerpractic.lukoicat.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.csiit.suumerpractic.lukoicat.MyGame;
 import com.csiit.suumerpractic.lukoicat.model.player.Player;
 import com.csiit.suumerpractic.lukoicat.model.World;
@@ -20,6 +28,10 @@ import java.util.Map;
  */
 public class GameScreen implements Screen {
 
+    private static final float WORLD_WIDTH = 1280;
+    private static final float WORLD_HEIGHT = 720;
+    private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
+    private TiledMap tiledMap;
     final MyGame game;
 
     public OrthographicCamera cam;
@@ -28,11 +40,13 @@ public class GameScreen implements Screen {
     Texture textureMen;
     Texture textureMonster;
     Texture textureGun;
+    Viewport viewport;
 
     public Map<String, TextureRegion> textureRegions = new HashMap<String, TextureRegion>();
 
     public int width;
     public int height;
+    private ShapeRenderer shapeRenderer;
 
     public GameScreen(final MyGame game) {
         this.game = game;
@@ -40,15 +54,36 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        this.cam = new OrthographicCamera(World.CAMERA_WIDTH, World.CAMERA_HEIGHT);
-        SetCamera(World.CAMERA_WIDTH / 2f, World.CAMERA_HEIGHT / 2f);
+
+        this.cam = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        this.cam.position.set(WORLD_WIDTH/2, WORLD_HEIGHT/2, 0);
+        this.cam.update();
+
+        viewport =  new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, cam);
+        viewport.apply(true);
+        shapeRenderer = new ShapeRenderer();
+        tiledMap = game.getAssetManager().get("map_lykoi.tmx");
+
         spriteBatch = new SpriteBatch();
         loadTextures();
+
         world = new World(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, spriteBatch, textureRegions);
         Gdx.input.setInputProcessor(world);
+        orthogonalTiledMapRenderer = new
+                OrthogonalTiledMapRenderer(tiledMap, spriteBatch);
+        orthogonalTiledMapRenderer.setView(cam);
+        orthogonalTiledMapRenderer.setView(cam);
+
     }
 
+    private void draw() {
+       spriteBatch.setProjectionMatrix(cam.projection);
+       spriteBatch.setTransformMatrix(cam.view);
+       orthogonalTiledMapRenderer.render();
+    }
     private void loadTextures() {
+       // mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1);
+
         textureMen = new Texture(Gdx.files.internal("men.png"));
         TextureRegion tmp[][] = TextureRegion.split(textureMen, textureMen.getWidth(), textureMen.getHeight());
         textureRegions.put("player", tmp[0][0]);
@@ -79,21 +114,37 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
         this.width = width;
         this.height = height;
-        world.getViewport().update(width, height, true);
+       world.getViewport().update(width, height, true);
     }
 
+    private void clearScreen() {
+        Gdx.gl.glClearColor(Color.DARK_GRAY.r, Color.DARK_GRAY.g,
+                Color.DARK_GRAY.b, Color.DARK_GRAY.a);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
 
+    private void drawDebug() {
+        shapeRenderer.setProjectionMatrix(cam.projection);
+        shapeRenderer.setTransformMatrix(cam.view);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.end();
+    }
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        world.update(delta);
-        world.draw();
+       update(delta);
+       clearScreen();
+       draw();
+       drawDebug();
 
-        game.batch.begin();
-        game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
-        game.batch.end();
+       world.update(delta);
+       world.draw();
+       game.batch.begin();
+       game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
+       game.batch.end();
+    }
+
+    private void update(float delta) {
     }
 
     @Override

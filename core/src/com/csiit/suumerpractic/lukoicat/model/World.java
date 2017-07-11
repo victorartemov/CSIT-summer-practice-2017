@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.csiit.suumerpractic.lukoicat.MyGame;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 import com.csiit.suumerpractic.lukoicat.model.player.Player;
 import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
@@ -20,6 +21,8 @@ import java.util.Map;
 public class World extends Stage implements Constant {
 
 
+  //  MyGame game;
+
     public static float CAMERA_WIDTH = 8f;
     public static float CAMERA_HEIGHT = 5f;
 
@@ -28,6 +31,14 @@ public class World extends Stage implements Constant {
     public Actor selectedActor = null;
     public Map<String, TextureRegion> textureRegions;
     Player player;
+
+   //public MyGame getGame() {
+   //    return game;
+   //}
+
+   //public void setGame(MyGame game) {
+   //    this.game = game;
+   //}
 
     public World(int x, int y, boolean b, SpriteBatch spriteBatch, Map<String, TextureRegion> textureRegions) {
         super.getViewport().update(x, y, b);

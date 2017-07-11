@@ -32,14 +32,6 @@ public class Zombie extends Actor implements Constant {
     private int life;
     private String name;
 
-   //static Map<Direction, Boolean> direction = new HashMap<Direction, Boolean>();
-
-   //static {
-   //    direction.put(Direction.LEFT, false);
-   //    direction.put(Direction.RIGHT, false);
-   //    direction.put(Direction.UP, false);
-   //    direction.put(Direction.DOWN, false);
-   //}
 
     public Zombie(World world, Vector2 vector2, float SIZE, float Radius, float SPEED, int life, String name) {
 
@@ -102,8 +94,7 @@ public class Zombie extends Actor implements Constant {
                 animatorZombie.walkUp(batch);
             } else
                 animatorZombie.stayZombie(batch);
-            // batch.draw(world.textureRegions.get(name), getX(), getY(), getWidth(), getHeight());
-            // batch.setColor(1, 1, 1, 1);
+             batch.setColor(1, 1, 1, 1);
         }
     }
 

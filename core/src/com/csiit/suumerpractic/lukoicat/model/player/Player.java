@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.csiit.suumerpractic.lukoicat.MyGame;
 import com.csiit.suumerpractic.lukoicat.animation.AnimatorMen;
 import com.csiit.suumerpractic.lukoicat.model.World;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
@@ -18,6 +19,7 @@ public class Player extends Actor implements Constant {
 
     AnimatorMen animatorMen;
 
+    //private MyGame game;
     public static final float SPEED = 1f;
     public static final float height = 1.0f;
     public static final float width = 0.4f;
@@ -49,6 +51,14 @@ public class Player extends Actor implements Constant {
 
     float mouseX = -1, mouseY = -1;
     private boolean findGun = false;
+
+   // public MyGame getGame() {
+   //     return game;
+   // }
+//
+   // public void setGame(MyGame game) {
+   //     this.game = game;
+   // }
 
     public Player(Vector2 position, World world) {
 
@@ -123,7 +133,7 @@ public class Player extends Actor implements Constant {
     @Override
     public void draw(Batch batch, float parentAlfa) {
         if (this.equals(world.selectedActor)) {
-            batch.setColor(0.9f, 0.9f, 0.9f, 0.9f);
+           batch.setColor(1f, 1f, 1f, 1f);
         }
         animatorMen.setPositionMen(getX(), getY());
         if (direction.get(Direction.LEFT)){
