@@ -5,14 +5,18 @@ import com.badlogic.gdx.math.Rectangle;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.csiit.suumerpractic.lukoicat.animation.AnimatorZombie;
 import com.csiit.suumerpractic.lukoicat.model.World;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 import com.csiit.suumerpractic.lukoicat.model.player.Player;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class Zombie extends Actor implements Constant {
 
+    AnimatorZombie animatorZombie;
     private final float SIZE;
     private final float Radius;
     private final float SPEED;
@@ -28,8 +32,21 @@ public class Zombie extends Actor implements Constant {
     private int life;
     private String name;
 
+   //static Map<Direction, Boolean> direction = new HashMap<Direction, Boolean>();
+
+   //static {
+   //    direction.put(Direction.LEFT, false);
+   //    direction.put(Direction.RIGHT, false);
+   //    direction.put(Direction.UP, false);
+   //    direction.put(Direction.DOWN, false);
+   //}
 
     public Zombie(World world, Vector2 vector2, float SIZE, float Radius, float SPEED, int life, String name) {
+
+        this.animatorZombie = new AnimatorZombie();
+        animatorZombie.create();
+        animatorZombie.setWorld(world);
+        animatorZombie.setSize(getWidth(), getHeight());
 
         this.name = name;
         this.SIZE = SIZE;
@@ -70,12 +87,24 @@ public class Zombie extends Actor implements Constant {
             setX(position.x * world.ppuX);
             setY(position.y * world.ppuY);
         }
-
     }
 
     public void draw(Batch batch, float parentAlfa) {
-        batch.draw(world.textureRegions.get(name), getX(), getY(), getWidth(), getHeight());
-        batch.setColor(1, 1, 1, 1);
+        if(state != State.DEAD) {
+            animatorZombie.setPositionMen(getX(), getY());
+            if (direction == Direction.LEFT) {
+                animatorZombie.walkLeft(batch);
+            } else if (direction == Direction.RIGHT) {
+                animatorZombie.walkRight(batch);
+            } else if (direction == Direction.DOWN) {
+                animatorZombie.walkDown(batch);
+            } else if (direction == Direction.UP) {
+                animatorZombie.walkUp(batch);
+            } else
+                animatorZombie.stayZombie(batch);
+            // batch.draw(world.textureRegions.get(name), getX(), getY(), getWidth(), getHeight());
+            // batch.setColor(1, 1, 1, 1);
+        }
     }
 
     public Vector2 getPosition() {
@@ -105,7 +134,6 @@ public class Zombie extends Actor implements Constant {
 
         float offset = delta * speed * 2;
 
-
         if (Math.abs(bX - X) < getWidth() / 2) {
             if (checkX(offset)) {
                 if (bY > Y) {
@@ -125,7 +153,6 @@ public class Zombie extends Actor implements Constant {
                     getVelocity().x = speed;
                 }
             }
-
         }
         if (Math.abs(bY - Y) < height / 2) {
             if (checkY(offset)) {
@@ -158,12 +185,10 @@ public class Zombie extends Actor implements Constant {
     }
 
     private boolean canKill() {
-
         int bX = Math.round(world.getSelectedActor().getPosition().x);
         int bY = Math.round(world.getSelectedActor().getPosition().y);
         int X = Math.round(getPosition().x);
         int Y = Math.round(getPosition().y);
-
         return Math.sqrt(Math.pow(X - bX, 2) + Math.pow(Y - bY, 2)) < SPEED ? true : false;
     }
 
@@ -184,7 +209,6 @@ public class Zombie extends Actor implements Constant {
                 see = true;
             }
         }
-
         return see;
     }
 
@@ -244,7 +268,6 @@ public class Zombie extends Actor implements Constant {
     private boolean checkY(float offset) {
         return getPosition().y - (int) getPosition().y < offset;
     }
-
 
     public void makeDamage() {
         life--;

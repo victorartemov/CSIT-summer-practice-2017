@@ -1,6 +1,5 @@
 package com.csiit.suumerpractic.lukoicat.animation;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,16 +10,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.csiit.suumerpractic.lukoicat.model.World;
 
-public class AnimatorMen implements ApplicationListener{
+/**
+ * Created by Juli on 11.07.2017.
+ */
+public class AnimatorZombie implements ApplicationListener {
 
-    private static final int FRAME_ROWS = 12;
+    private static final int FRAME_ROWS = 11;
 
     private float x;
     private float y;
 
     private float width;
     private float height;
-
+    private String nameOfFile;
 
     World world;
     Animation walkDownAnimation;
@@ -37,7 +39,6 @@ public class AnimatorMen implements ApplicationListener{
     SpriteBatch spriteBatch;
     TextureRegion currentFrame;
     TextureRegion textureStayMen;
-    boolean haveGun = false;
 
     float stateTime;
 
@@ -45,23 +46,12 @@ public class AnimatorMen implements ApplicationListener{
         this.world = world;
     }
 
-    public void giveGun(){
-        haveGun = true;
-    }
 
-   // public void giveGun(){
-   //     haveGun = true;
-   // }
 
     @Override
     public void create() {
-        if(haveGun){
-            walkSheet = new Texture(Gdx.files.internal("men_with_gun.gif"));
-        }
-        else {
-            walkSheet = new Texture(Gdx.files.internal("men_all.gif"));
-        }
-        //walkSheet = new Texture(Gdx.files.internal("men_all.gif"));
+     //   nameOfFile = "monster.gif";
+        walkSheet = new Texture(Gdx.files.internal("monster.gif"));
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth(), walkSheet.getHeight()/FRAME_ROWS);
         textureStayMen = tmp[0][0];
         walkDownFrames = new TextureRegion[2];
@@ -69,16 +59,16 @@ public class AnimatorMen implements ApplicationListener{
         walkLeftFrames = new TextureRegion[2];
         walkRightFrames = new TextureRegion[2];
 
-       int indexD = 0;
-       int indexU = 0;
-       int indexR = 0;
-       int indexL = 0;
-       for (int i = 1; i < 3; i++) {
-           walkDownFrames[indexD++] = tmp[i][0];
-           walkUpFrames[indexU++] = tmp[i+3][0];
-           walkRightFrames[indexR++] = tmp[i+6][0];
-           walkLeftFrames[indexL++] = tmp[i+9][0];
-       }
+        int indexD = 0;
+        int indexU = 0;
+        int indexR = 0;
+        int indexL = 0;
+        for (int i = 1; i < 3; i++) {
+            walkDownFrames[indexD++] = tmp[i][0];
+            walkUpFrames[indexU++] = tmp[i+3][0];
+            walkRightFrames[indexR++] = tmp[i+6][0];
+            walkLeftFrames[indexL++] = tmp[i+8][0];
+        }
 
         walkDownAnimation = new Animation(0.25f, walkDownFrames);
         walkUpAnimation = new Animation(0.25f, walkUpFrames);
@@ -89,7 +79,7 @@ public class AnimatorMen implements ApplicationListener{
         stateTime = 0f;
     }
 
-    public void stay(Batch batch){
+    public void stayZombie(Batch batch){
         batch.draw(textureStayMen,x,y,42,100);
 
     }
@@ -128,28 +118,20 @@ public class AnimatorMen implements ApplicationListener{
         batch.draw(currentFrame, x, y, 42,100);
     }
 
- // public void render(Batch batch) {
- //     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
- //     stateTime += Gdx.graphics.getDeltaTime();
- //     currentFrame = (TextureRegion) walkDownAnimation.getKeyFrame(stateTime, true);
- //     batch.draw(currentFrame, x, y, 42,100);
- //}
+    @Override
+    public void pause() {
 
-   @Override
-   public void pause() {
+    }
 
-   }
+    @Override
+    public void resume() {
 
-   @Override
-   public void resume() {
+    }
 
-   }
+    @Override
+    public void dispose() {
 
-   @Override
-   public void dispose() {
-
-   }
-
+    }
 
     public void setPositionMen(float x, float y) {
         this.x = x;
@@ -160,5 +142,13 @@ public class AnimatorMen implements ApplicationListener{
         this.width = width;
         this.height = height;
 
+    }
+
+    public String getNameOfFile() {
+        return nameOfFile;
+    }
+
+    public void setNameOfFile(String nameOfFile) {
+        this.nameOfFile = nameOfFile;
     }
 }

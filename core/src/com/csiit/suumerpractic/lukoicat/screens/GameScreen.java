@@ -57,7 +57,7 @@ public class GameScreen implements Screen {
         TextureRegion textureMonst[][] = TextureRegion.split(textureMonster, textureMonster.getWidth(), textureMonster.getHeight());
         textureRegions.put("monster", textureMonst[0][0]);
 
-        textureGun = new Texture(Gdx.files.internal("badlogic.jpg"));
+        textureGun = new Texture(Gdx.files.internal("gun.png"));
         TextureRegion textureGu[][] = TextureRegion.split(textureGun, textureGun.getWidth(), textureGun.getHeight());
         textureRegions.put("gun", textureGu[0][0]);
 

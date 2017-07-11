@@ -24,8 +24,8 @@ public class Weapon extends Actor implements Constant {
     private State state;
     private Vector2 position;
 
-    private final float height = 0.4f;
-    private final float width = 0.4f;
+    private final float height = 0.1f;
+    private final float width = 0.2f;
 
     public Weapon(World world, Vector2 position, Weapon weaponeType, String name, int damage) {
         this.weaponeType = weaponeType;

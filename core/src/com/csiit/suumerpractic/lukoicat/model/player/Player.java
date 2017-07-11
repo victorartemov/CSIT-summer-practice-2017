@@ -36,7 +36,6 @@ public class Player extends Actor implements Constant {
 
 
     State state = State.NONE;
-    // boolean facingLeft = true;
 
     //Мап для направлений
     static Map<Direction, Boolean> direction = new HashMap<Direction, Boolean>();
@@ -49,7 +48,7 @@ public class Player extends Actor implements Constant {
     }
 
     float mouseX = -1, mouseY = -1;
-    private boolean findGun=false;
+    private boolean findGun = false;
 
     public Player(Vector2 position, World world) {
 
@@ -75,9 +74,6 @@ public class Player extends Actor implements Constant {
 
     public void killZombie(Zombie zombie) {
         zombie.makeDamage();
-
-
-
     }
 
     public int getCountLife() {
@@ -99,7 +95,6 @@ public class Player extends Actor implements Constant {
         }
     }
 
-
     public void update(float delta) {
         if (state != State.DEAD) {
             if (direction.get(Direction.LEFT)) {
@@ -107,16 +102,13 @@ public class Player extends Actor implements Constant {
                     mouseY = -1;
                     mouseX = -1;
                     return;
-
                 }
             } else {
                 if (Math.abs(mouseX - getX()) <= getWidth() && Math.abs(mouseY - getY()) < SPEED) {
                     mouseY = -1;
                     mouseX = -1;
                     return;
-
                 }
-
             }
             position.add(velocity.scl(delta));
             setX(position.x * world.ppuX);
@@ -124,11 +116,7 @@ public class Player extends Actor implements Constant {
 
             if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX < getX() || mouseX > getX()))
                 ChangeNavigation(mouseX, mouseY);
-
-
-
         }
-
     }
 
 
@@ -138,8 +126,21 @@ public class Player extends Actor implements Constant {
             batch.setColor(0.9f, 0.9f, 0.9f, 0.9f);
         }
         animatorMen.setPositionMen(getX(), getY());
-        animatorMen.render(batch);
-        //batch.setColor(1, 1, 1, 1);
+        if (direction.get(Direction.LEFT)){
+            animatorMen.walkLeft(batch);
+        }
+        else
+            if(direction.get(Direction.RIGHT)){
+                animatorMen.walkRight(batch);
+            }
+            else if(direction.get(Direction.DOWN)){
+                animatorMen.walkDown(batch);
+            }
+            else if(direction.get(Direction.UP)){
+                animatorMen.walkUp(batch);
+            }
+            else
+                animatorMen.stay(batch);
     }
 
  /*   //Процедура проверки. Если точка в прямоугольнике актёра, возвращаем актёра.
@@ -171,6 +172,7 @@ public class Player extends Actor implements Constant {
 
         if( !findGun){
             findGun();
+
         }
     }
 
@@ -225,6 +227,10 @@ public class Player extends Actor implements Constant {
                 this.weapon = world.getWeapone().getWeaponeType();
                 world.getWeapone().setState(State.TAKEN);
                 findGun=true;
+
+                animatorMen.giveGun();
+                animatorMen.create();
+                animatorMen.setPositionMen(getX(), getY());
             }
 
         if ((x + width) <= (xW + weaponWidth) && x >= (xW + weaponWidth))

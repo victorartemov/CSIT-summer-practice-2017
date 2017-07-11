@@ -34,12 +34,12 @@ public class World extends Stage implements Constant {
         this.textureRegions = textureRegions;
         ppuX = getWidth() / CAMERA_WIDTH;
         ppuY = getHeight() / CAMERA_HEIGHT;
-        player=new Player(new Vector2(4, 2), this);
+        player = new Player(new Vector2(4, 2), this);
         selectedActor=player;
         addActor(player);
 
         generateZombie(1, ZombieType.NORMAL);
-         generateWeapon(Weapon.GUN);
+        generateWeapon(Weapon.GUN);
 
     }
 
