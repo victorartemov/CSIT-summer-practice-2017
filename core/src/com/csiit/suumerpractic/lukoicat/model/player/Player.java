@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.csiit.suumerpractic.lukoicat.animation.AnimatorMen;
 import com.csiit.suumerpractic.lukoicat.model.World;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
+import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
+import com.csiit.suumerpractic.lukoicat.prize.Weapon;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +23,7 @@ public class Player extends Actor implements Constant {
     public static final float width = 0.4f;
 
     private int countLife;
-    private Weapone weapone;
+    private Weapon weapon;
     public boolean isCat = false;
 
 
@@ -46,7 +48,8 @@ public class Player extends Actor implements Constant {
         direction.put(Direction.DOWN, false);
     }
 
-    float mouseX = -1, mouseY = -1;//коряво, но я переделаю, как придумаю др. способ, ибо все остальные 100 у меня не получились, тут свои трудности
+    float mouseX = -1, mouseY = -1;
+    private boolean findGun=false;
 
     public Player(Vector2 position, World world) {
 
@@ -55,7 +58,7 @@ public class Player extends Actor implements Constant {
         animatorMen.setWorld(world);
         animatorMen.setSize(getWidth(), getHeight());
         this.countLife = 10;
-        this.weapone = Weapone.NONE;
+        this.weapon = Weapon.NONE;
         this.world = world;
         this.position = position;
         setHeight(height * world.ppuY);
@@ -70,7 +73,10 @@ public class Player extends Actor implements Constant {
         });
     }
 
-    public void killZombie() {
+    public void killZombie(Zombie zombie) {
+        zombie.makeDamage();
+
+
 
     }
 
@@ -119,7 +125,10 @@ public class Player extends Actor implements Constant {
             if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX < getX() || mouseX > getX()))
                 ChangeNavigation(mouseX, mouseY);
 
+
+
         }
+
     }
 
 
@@ -133,12 +142,12 @@ public class Player extends Actor implements Constant {
         //batch.setColor(1, 1, 1, 1);
     }
 
-    //Процедура проверки. Если точка в прямоугольнике актёра, возвращаем актёра.
+ /*   //Процедура проверки. Если точка в прямоугольнике актёра, возвращаем актёра.
     public Actor hit(float x, float y, boolean touchable) {
 
         return x > 0 && x < getWidth() && y > 0 && y < getHeight() ? this : null;
     }
-
+*/
 
     public void ChangeNavigation(float x, float y) {
         mouseX = x;
@@ -159,6 +168,10 @@ public class Player extends Actor implements Constant {
         if (x > (getPosition().x + width) * world.ppuX)
             rightPressed();
         processInput();
+
+        if( !findGun){
+            findGun();
+        }
     }
 
     public void resetWay() {
@@ -193,6 +206,35 @@ public class Player extends Actor implements Constant {
             getVelocity().y = 0;
     }
 
+    private void findGun() {
+
+        float width = this.getWidth();
+        float hight = this.getHeight();
+
+        float weaponWidth = world.getWeapone().getWidth();
+        float weaponeHight = world.getWeapone().getHeight();
+
+        float x = this.getPosition().x;
+        float y = this.getPosition().y;
+
+        float xW = world.getWeapone().getPosition().x;
+        float yW = world.getWeapone().getPosition().y;
+
+        if ((x + width) >= xW && x <= xW )
+            if ((y + hight) >= yW && y <= yW) {
+                this.weapon = world.getWeapone().getWeaponeType();
+                world.getWeapone().setState(State.TAKEN);
+                findGun=true;
+            }
+
+        if ((x + width) <= (xW + weaponWidth) && x >= (xW + weaponWidth))
+            if ((y + hight) >= (yW + weaponeHight) && y <= (yW + weaponeHight)) {
+                this.weapon = world.getWeapone().getWeaponeType();
+                world.getWeapone().setState(State.TAKEN);
+                findGun=true;
+            }
+
+    }
 
     public void setState(State state) {
         this.state = state;

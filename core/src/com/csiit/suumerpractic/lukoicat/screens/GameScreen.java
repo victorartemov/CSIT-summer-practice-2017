@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.csiit.suumerpractic.lukoicat.MyGame;
@@ -28,6 +27,8 @@ public class GameScreen implements Screen {
     private SpriteBatch spriteBatch;
     Texture textureMen;
     Texture textureMonster;
+    Texture textureGun;
+
     public Map<String, TextureRegion> textureRegions = new HashMap<String, TextureRegion>();
 
     public int width;
@@ -56,6 +57,16 @@ public class GameScreen implements Screen {
         TextureRegion textureMonst[][] = TextureRegion.split(textureMonster, textureMonster.getWidth(), textureMonster.getHeight());
         textureRegions.put("monster", textureMonst[0][0]);
 
+        textureGun = new Texture(Gdx.files.internal("badlogic.jpg"));
+        TextureRegion textureGu[][] = TextureRegion.split(textureGun, textureGun.getWidth(), textureGun.getHeight());
+        textureRegions.put("gun", textureGu[0][0]);
+
+        //  //Получение регионов. Атлас состоит из 4 изображений одинакового размера
+        //  TextureRegion tmp[][] = TextureRegion.split(texture, texture.getWidth() / 2, texture.getHeight() / 2);
+        //  textureRegions.put("player", tmp[0][0]);
+        //  textureRegions.put("zoombie", tmp[0][1]);
+        //  textureRegions.put("brick2", tmp[1][0]);
+        //  textureRegions.put("brick3", tmp[1][1]);
     }
 
 
