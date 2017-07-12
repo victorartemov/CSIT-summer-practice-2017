@@ -93,26 +93,22 @@ public class AnimatorZombie implements ApplicationListener {
     }
 
     public void walkDown(Batch batch){
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkDownAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, x, y, 42,100);
     }
     public void walkUp(Batch batch) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkUpAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, x, y, 42, 100);
     }
 
     public void walkLeft(Batch batch){
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkLeftAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, x, y, 42,100);
     }
     public void walkRight(Batch batch){
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkRightAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, x, y, 42,100);

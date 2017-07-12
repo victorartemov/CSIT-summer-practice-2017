@@ -14,6 +14,8 @@ import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.csiit.suumerpractic.lukoicat.MyGame;
@@ -55,14 +57,14 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
 
-        this.cam = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        this.cam.position.set(WORLD_WIDTH/2, WORLD_HEIGHT/2, 0);
+        this.cam = new OrthographicCamera(WORLD_WIDTH/6, WORLD_HEIGHT/6);
+        this.cam.position.set(WORLD_WIDTH/6, WORLD_HEIGHT/6, 0);
         this.cam.update();
 
-        viewport =  new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, cam);
+        viewport =  new FitViewport(WORLD_WIDTH/4, WORLD_HEIGHT/4, cam);
         viewport.apply(true);
         shapeRenderer = new ShapeRenderer();
-        tiledMap = game.getAssetManager().get("map_lykoi.tmx");
+        tiledMap = game.getAssetManager().get("maps/map_lykoi_1.1.tmx");
 
         spriteBatch = new SpriteBatch();
         loadTextures();
@@ -72,7 +74,7 @@ public class GameScreen implements Screen {
         orthogonalTiledMapRenderer = new
                 OrthogonalTiledMapRenderer(tiledMap, spriteBatch);
         orthogonalTiledMapRenderer.setView(cam);
-        orthogonalTiledMapRenderer.setView(cam);
+        orthogonalTiledMapRenderer.setMap(tiledMap);
 
     }
 
@@ -84,24 +86,18 @@ public class GameScreen implements Screen {
     private void loadTextures() {
        // mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1);
 
-        textureMen = new Texture(Gdx.files.internal("men.png"));
-        TextureRegion tmp[][] = TextureRegion.split(textureMen, textureMen.getWidth(), textureMen.getHeight());
-        textureRegions.put("player", tmp[0][0]);
+      textureMen = new Texture(Gdx.files.internal("men.png"));
+      TextureRegion tmp[][] = TextureRegion.split(textureMen, textureMen.getWidth(), textureMen.getHeight());
+      textureRegions.put("player", tmp[0][0]);
 
-        textureMonster = new Texture(Gdx.files.internal("monster.png"));
-        TextureRegion textureMonst[][] = TextureRegion.split(textureMonster, textureMonster.getWidth(), textureMonster.getHeight());
-        textureRegions.put("monster", textureMonst[0][0]);
+      textureMonster = new Texture(Gdx.files.internal("monster.png"));
+      TextureRegion textureMonst[][] = TextureRegion.split(textureMonster, textureMonster.getWidth(), textureMonster.getHeight());
+      textureRegions.put("monster", textureMonst[0][0]);
 
         textureGun = new Texture(Gdx.files.internal("gun.png"));
         TextureRegion textureGu[][] = TextureRegion.split(textureGun, textureGun.getWidth(), textureGun.getHeight());
         textureRegions.put("gun", textureGu[0][0]);
 
-        //  //Получение регионов. Атлас состоит из 4 изображений одинакового размера
-        //  TextureRegion tmp[][] = TextureRegion.split(texture, texture.getWidth() / 2, texture.getHeight() / 2);
-        //  textureRegions.put("player", tmp[0][0]);
-        //  textureRegions.put("zoombie", tmp[0][1]);
-        //  textureRegions.put("brick2", tmp[1][0]);
-        //  textureRegions.put("brick3", tmp[1][1]);
     }
 
 
@@ -131,8 +127,9 @@ public class GameScreen implements Screen {
     }
     @Override
     public void render(float delta) {
-
-       update(delta);
+       cam.update();
+       //cam.position.set(new Vector3(cam.position.x + 0.1f, cam.position.y, 0));
+        update(delta);
        clearScreen();
        draw();
        drawDebug();
@@ -145,6 +142,15 @@ public class GameScreen implements Screen {
     }
 
     private void update(float delta) {
+
+      //  clearScreen();
+        draw();
+       // drawDebug();
+       // world.update(delta);
+       // world.draw();
+       // game.batch.begin();
+       // game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
+       // game.batch.end();
     }
 
     @Override

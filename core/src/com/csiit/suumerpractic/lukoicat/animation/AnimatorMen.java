@@ -49,9 +49,6 @@ public class AnimatorMen implements ApplicationListener{
         haveGun = true;
     }
 
-   // public void giveGun(){
-   //     haveGun = true;
-   // }
 
     @Override
     public void create() {
@@ -61,9 +58,12 @@ public class AnimatorMen implements ApplicationListener{
         else {
             walkSheet = new Texture(Gdx.files.internal("men_all.gif"));
         }
-        //walkSheet = new Texture(Gdx.files.internal("men_all.gif"));
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth(), walkSheet.getHeight()/FRAME_ROWS);
-        textureStayMen = tmp[0][0];
+        if(haveGun)
+            textureStayMen = tmp[1][0];
+        else
+            textureStayMen = tmp[0][0];
+
         walkDownFrames = new TextureRegion[2];
         walkUpFrames = new TextureRegion[2];
         walkLeftFrames = new TextureRegion[2];
@@ -91,7 +91,6 @@ public class AnimatorMen implements ApplicationListener{
 
     public void stay(Batch batch){
         batch.draw(textureStayMen,x,y,42,100);
-
     }
     @Override
     public void resize(int width, int height) {
@@ -103,37 +102,27 @@ public class AnimatorMen implements ApplicationListener{
     }
 
     public void walkDown(Batch batch){
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkDownAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, x, y, 42,100);
     }
     public void walkUp(Batch batch) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkUpAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, x, y, 42, 100);
     }
 
     public void walkLeft(Batch batch){
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkLeftAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, x, y, 42,100);
     }
     public void walkRight(Batch batch){
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkRightAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, x, y, 42,100);
     }
 
- // public void render(Batch batch) {
- //     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
- //     stateTime += Gdx.graphics.getDeltaTime();
- //     currentFrame = (TextureRegion) walkDownAnimation.getKeyFrame(stateTime, true);
- //     batch.draw(currentFrame, x, y, 42,100);
- //}
 
    @Override
    public void pause() {
@@ -159,6 +148,5 @@ public class AnimatorMen implements ApplicationListener{
     public void setSize(float width, float height) {
         this.width = width;
         this.height = height;
-
     }
 }

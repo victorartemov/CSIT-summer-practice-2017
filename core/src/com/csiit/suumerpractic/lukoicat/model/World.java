@@ -21,8 +21,6 @@ import java.util.Map;
 public class World extends Stage implements Constant {
 
 
-  //  MyGame game;
-
     public static float CAMERA_WIDTH = 8f;
     public static float CAMERA_HEIGHT = 5f;
 
@@ -30,15 +28,17 @@ public class World extends Stage implements Constant {
     public float ppuY;
     public Actor selectedActor = null;
     public Map<String, TextureRegion> textureRegions;
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     Player player;
 
-   //public MyGame getGame() {
-   //    return game;
-   //}
-
-   //public void setGame(MyGame game) {
-   //    this.game = game;
-   //}
 
     public World(int x, int y, boolean b, SpriteBatch spriteBatch, Map<String, TextureRegion> textureRegions) {
         super.getViewport().update(x, y, b);

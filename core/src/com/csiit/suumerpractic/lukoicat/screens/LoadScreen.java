@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.csiit.suumerpractic.lukoicat.MyGame;
@@ -25,15 +26,11 @@ public class LoadScreen implements Screen {
     private static final float WORLD_HEIGHT = 720;
     private static final float PROGRESS_BAR_WIDTH = 100;
     private static final float PROGRESS_BAR_HEIGHT = 25;
-  //  private TiledMap tiledMap;
- //   public MapRenderer mapRenderer;
+
     final MyGame game;
 
     public OrthographicCamera cam;
-    //public World world;
     Viewport viewport;
-
-    //public Map<String, TextureRegion> textureRegions = new HashMap<String, TextureRegion>();
 
     public int width;
     public int height;
@@ -52,7 +49,7 @@ public class LoadScreen implements Screen {
         viewport = new FitViewport(WORLD_WIDTH / 2, WORLD_HEIGHT/2, cam);
         shapeRenderer = new ShapeRenderer();
 
-        game.getAssetManager().load("map_lykoi.tmx", TiledMap.class);
+        game.getAssetManager().load("maps/map_lykoi_1.1.tmx", TiledMap.class);
     }
 
     private void draw() {
