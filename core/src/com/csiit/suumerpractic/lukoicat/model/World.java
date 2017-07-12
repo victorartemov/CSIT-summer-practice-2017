@@ -2,6 +2,7 @@ package com.csiit.suumerpractic.lukoicat.model;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,6 +10,7 @@ import com.csiit.suumerpractic.lukoicat.MyGame;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 import com.csiit.suumerpractic.lukoicat.model.player.Player;
 import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
+import com.csiit.suumerpractic.lukoicat.prize.Health;
 import com.csiit.suumerpractic.lukoicat.prize.Weapon;
 
 import java.util.Map;
@@ -33,12 +35,9 @@ public class World extends Stage implements Constant {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 
-    Player player;
-
+    private Player player;
+    private int zombieCount = 2;
 
     public World(int x, int y, boolean b, SpriteBatch spriteBatch, Map<String, TextureRegion> textureRegions) {
         super.getViewport().update(x, y, b);
@@ -46,11 +45,12 @@ public class World extends Stage implements Constant {
         ppuX = getWidth() / CAMERA_WIDTH;
         ppuY = getHeight() / CAMERA_HEIGHT;
         player = new Player(new Vector2(4, 2), this);
-        selectedActor=player;
+        selectedActor = player;
         addActor(player);
 
-        generateZombie(1, ZombieType.NORMAL);
+        generateZombie(zombieCount, ZombieType.NORMAL);
         generateWeapon(Weapon.GUN);
+
 
     }
 
@@ -80,7 +80,16 @@ public class World extends Stage implements Constant {
     //двигаем выбранного игрока
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
+
         moveSelected(x, y);
+        for (Actor actor : getActors()) {
+            if (actor instanceof Zombie) {
+                if (((Zombie) actor).canKill(x, this.getHeight() - y)) {
+                    player.killZombie((Zombie) actor);
+                    System.out.println("makeDamage");
+                }
+            }
+        }
         return true;
     }
 
@@ -91,15 +100,7 @@ public class World extends Stage implements Constant {
         return true;
     }
 
-    public Actor hit(float x, float y, boolean touchable) {
-        Actor actor = super.hit(x, y, touchable);
-        //если выбрали актера
-        if (actor instanceof Zombie)
-            player.killZombie((Zombie)actor);
-        return actor;
-    }
-
-    //создание зомби
+   //создание зомби
     private void generateZombie(int count, ZombieType zombieType) {
         for (int i = 0; i < count; i++) {
             addActor(zombieType.choseZombie(this, CAMERA_WIDTH, CAMERA_HEIGHT));
@@ -118,6 +119,15 @@ public class World extends Stage implements Constant {
                 weapon = (com.csiit.suumerpractic.lukoicat.prize.Weapon) actor;
         }
         return weapon;
+    }
+
+    public Health getHealth() {
+        Health health = null;
+        for (Actor actor : this.getActors()) {
+            if (actor instanceof Health)
+                health = (Health) actor;
+        }
+        return health;
     }
 
 

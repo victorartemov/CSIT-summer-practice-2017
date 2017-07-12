@@ -17,48 +17,39 @@ import java.util.Map;
 
 public class Player extends Actor implements Constant {
 
-    AnimatorMen animatorMen;
+    private AnimatorMen animatorMen;
 
     //private MyGame game;
-    public static final float SPEED = 1f;
-    public static final float height = 1.0f;
-    public static final float width = 0.4f;
+    private static final float SPEED = 1f;
+    //не удалять, это влияет на зомби
+    private static final float height = 1.0f;
+    private static final float width = 0.4f;
 
     private int countLife;
     private Weapon weapon;
     public boolean isCat = false;
-
-
-    World world;
-
-    Vector2 position = new Vector2();
+    private World world;
+    private Vector2 position = new Vector2();
 
     //для выч. движения
-    Vector2 velocity = new Vector2();
-
-
-    State state = State.NONE;
+    private Vector2 velocity = new Vector2();
+    private State state = State.NONE;
+    private boolean findHealth = false;
 
     //Мап для направлений
-    static Map<Direction, Boolean> direction = new HashMap<Direction, Boolean>();
+    private static Map<Direction, Boolean> direction;
 
     static {
+        direction = new HashMap<Direction, Boolean>();
         direction.put(Direction.LEFT, false);
         direction.put(Direction.RIGHT, false);
         direction.put(Direction.UP, false);
         direction.put(Direction.DOWN, false);
     }
 
-    float mouseX = -1, mouseY = -1;
+    private float mouseX = -1;
+    private float mouseY = -1;
     private boolean findGun = false;
-
-   // public MyGame getGame() {
-   //     return game;
-   // }
-//
-   // public void setGame(MyGame game) {
-   //     this.game = game;
-   // }
 
     public Player(Vector2 position, World world) {
 
@@ -78,7 +69,6 @@ public class Player extends Actor implements Constant {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
-
         });
     }
 
@@ -95,12 +85,10 @@ public class Player extends Actor implements Constant {
         this.countLife = countLife;
 
     }
-    //Получить урон
 
     public void toDamage() {
-
         countLife--;
-        if (countLife == 0) {
+        if (countLife <= 0) {
             state = State.DEAD;
         }
     }
@@ -127,38 +115,31 @@ public class Player extends Actor implements Constant {
             if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX < getX() || mouseX > getX()))
                 ChangeNavigation(mouseX, mouseY);
         }
+        else {
+            setWidth(0);
+        }
+
     }
 
 
     @Override
     public void draw(Batch batch, float parentAlfa) {
         if (this.equals(world.selectedActor)) {
-           batch.setColor(1f, 1f, 1f, 1f);
+            batch.setColor(1f, 1f, 1f, 1f);
         }
         animatorMen.setPositionMen(getX(), getY());
-        if (direction.get(Direction.LEFT)){
+        if (direction.get(Direction.LEFT)) {
             animatorMen.walkLeft(batch);
-        }
-        else
-            if(direction.get(Direction.RIGHT)){
-                animatorMen.walkRight(batch);
-            }
-            else if(direction.get(Direction.DOWN)){
-                animatorMen.walkDown(batch);
-            }
-            else if(direction.get(Direction.UP)){
-                animatorMen.walkUp(batch);
-            }
-            else
-                animatorMen.stay(batch);
+        } else if (direction.get(Direction.RIGHT)) {
+            animatorMen.walkRight(batch);
+        } else if (direction.get(Direction.DOWN)) {
+            animatorMen.walkDown(batch);
+        } else if (direction.get(Direction.UP)) {
+            animatorMen.walkUp(batch);
+        } else
+            animatorMen.stay(batch);
     }
 
- /*   //Процедура проверки. Если точка в прямоугольнике актёра, возвращаем актёра.
-    public Actor hit(float x, float y, boolean touchable) {
-
-        return x > 0 && x < getWidth() && y > 0 && y < getHeight() ? this : null;
-    }
-*/
 
     public void ChangeNavigation(float x, float y) {
         mouseX = x;
@@ -172,18 +153,16 @@ public class Player extends Actor implements Constant {
         if (y < getY()) {
             downPressed();
         }
-
         if (x < getX()) {
             leftPressed();
         }
         if (x > (getPosition().x + width) * world.ppuX)
             rightPressed();
         processInput();
-
-        if( !findGun){
+        if (!findGun) {
             findGun();
-
         }
+
     }
 
     public void resetWay() {
@@ -220,37 +199,34 @@ public class Player extends Actor implements Constant {
 
     private void findGun() {
 
-        float width = this.getWidth();
-        float hight = this.getHeight();
+        float xW = world.getWeapone().getX();
+        float yW = world.getWeapone().getY();
 
-        float weaponWidth = world.getWeapone().getWidth();
-        float weaponeHight = world.getWeapone().getHeight();
+        float xWeaponWidth = world.getWeapone().getWidth() + xW;
+        float yWeaponHeight = world.getWeapone().getHeight() + yW;
 
-        float x = this.getPosition().x;
-        float y = this.getPosition().y;
+        float x = this.getX();
+        float y = this.getY();
 
-        float xW = world.getWeapone().getPosition().x;
-        float yW = world.getWeapone().getPosition().y;
+        float xWidth = this.getWidth() + x;
+        float yHeight = this.getHeight() + y;
 
-        if ((x + width) >= xW && x <= xW )
-            if ((y + hight) >= yW && y <= yW) {
-                this.weapon = world.getWeapone().getWeaponeType();
-                world.getWeapone().setState(State.TAKEN);
-                findGun=true;
-
-                animatorMen.giveGun();
-                animatorMen.create();
-                animatorMen.setPositionMen(getX(), getY());
+        if (xW >= x && xW <= xWidth && xWeaponWidth >= x && xWeaponWidth <= xWidth) {
+            if (yW >= y && yW <= yHeight && yWeaponHeight >= y && yWeaponHeight <= yHeight) {
+                findGun = true;
             }
+        }
 
-        if ((x + width) <= (xW + weaponWidth) && x >= (xW + weaponWidth))
-            if ((y + hight) >= (yW + weaponeHight) && y <= (yW + weaponeHight)) {
-                this.weapon = world.getWeapone().getWeaponeType();
-                world.getWeapone().setState(State.TAKEN);
-                findGun=true;
-            }
+        if (findGun) {
+            this.weapon = world.getWeapone().getWeaponeType();
+            world.getWeapone().setState(State.TAKEN);
+            animatorMen.giveGun();
+            animatorMen.create();
+            animatorMen.setPositionMen(getX(), getY());
+        }
 
     }
+
 
     public void setState(State state) {
         this.state = state;
@@ -265,41 +241,40 @@ public class Player extends Actor implements Constant {
         return velocity;
     }
 
-    public void leftPressed() {
+    private void leftPressed() {
         direction.get(direction.put(Direction.LEFT, true));
     }
 
-    public void rightPressed() {
+    private void rightPressed() {
         direction.get(direction.put(Direction.RIGHT, true));
     }
 
-    public void upPressed() {
+    private void upPressed() {
         direction.get(direction.put(Direction.UP, true));
     }
 
-    public void downPressed() {
+    private void downPressed() {
         direction.get(direction.put(Direction.DOWN, true));
     }
 
-    public void leftReleased() {
+    private void leftReleased() {
         direction.get(direction.put(Direction.LEFT, false));
     }
 
-    public void rightReleased() {
+    private void rightReleased() {
         direction.get(direction.put(Direction.RIGHT, false));
     }
 
-    public void upReleased() {
+    private void upReleased() {
         direction.get(direction.put(Direction.UP, false));
     }
 
-    public void downReleased() {
+    private void downReleased() {
         direction.get(direction.put(Direction.DOWN, false));
     }
 
     public State getState() {
         return state;
     }
-
 
 }

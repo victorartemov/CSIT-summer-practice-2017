@@ -11,11 +11,6 @@ import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 
 public class Weapon extends Actor implements Constant {
 
-
-    private static float SIZE = 1f;
-
-
-    private Rectangle bounds = new Rectangle();
     private Weapon weaponeType;
     private World world;
     private String name;
@@ -32,8 +27,7 @@ public class Weapon extends Actor implements Constant {
         this.name = name;
         this.world = world;
         this.position = position;
-        this.bounds.width = SIZE;
-        this.bounds.height = SIZE;
+
         this.damage = damage;
         this.state = State.NONE;
         this.velocity = new Vector2();
@@ -59,17 +53,11 @@ public class Weapon extends Actor implements Constant {
             setWidth(0);
             setHeight(0);
         }
-
     }
 
     public Vector2 getPosition() {
         return position;
     }
-
-    public Rectangle getBounds() {
-        return bounds;
-    }
-
 
     public Weapon getWeaponeType() {
         return weaponeType;

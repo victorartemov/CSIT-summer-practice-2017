@@ -25,7 +25,6 @@ public interface Constant {
     enum Weapon {
         NONE, STONE, GUN;
 
-
         public com.csiit.suumerpractic.lukoicat.prize.Weapon makeWeapon(World world, float width, float height) {
             com.csiit.suumerpractic.lukoicat.prize.Weapon weapon = null;
             Vector2 vector2 = new Vector2(MathUtils.random(width), MathUtils.random(height));
@@ -46,7 +45,7 @@ public interface Constant {
             Vector2 vector2 = new Vector2(MathUtils.random(width), MathUtils.random(height));
             switch (this) {
                 case NORMAL:
-                    zombie = new Zombie(world, vector2, 0.9f, 2, 2, 10, "monster");
+                    zombie = new Zombie(world, vector2,  2, 2, 3, "monster");
                     break;
 
             }
