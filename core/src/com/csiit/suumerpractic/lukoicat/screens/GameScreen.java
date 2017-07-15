@@ -30,25 +30,15 @@ import java.util.Map;
  */
 public class GameScreen implements Screen {
 
-    private static final float WORLD_WIDTH = 1280;
-    private static final float WORLD_HEIGHT = 720;
-    private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
-    private TiledMap tiledMap;
     final MyGame game;
-
-    public OrthographicCamera cam;
     public World world;
     private SpriteBatch spriteBatch;
-    Texture textureMen;
-    Texture textureMonster;
     Texture textureGun;
-    Viewport viewport;
 
     public Map<String, TextureRegion> textureRegions = new HashMap<String, TextureRegion>();
 
     public int width;
     public int height;
-    private ShapeRenderer shapeRenderer;
 
     public GameScreen(final MyGame game) {
         this.game = game;
@@ -56,55 +46,21 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
-        this.cam = new OrthographicCamera(WORLD_WIDTH/6, WORLD_HEIGHT/6);
-        this.cam.position.set(WORLD_WIDTH/6, WORLD_HEIGHT/6, 0);
-        this.cam.update();
-
-        viewport =  new FitViewport(WORLD_WIDTH/4, WORLD_HEIGHT/4, cam);
-        viewport.apply(true);
-        shapeRenderer = new ShapeRenderer();
-        tiledMap = game.getAssetManager().get("maps/map_lykoi_1.1.tmx");
-
         spriteBatch = new SpriteBatch();
         loadTextures();
 
-        world = new World(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, spriteBatch, textureRegions);
+        world = new World(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, spriteBatch, textureRegions, game);
+
         Gdx.input.setInputProcessor(world);
-        orthogonalTiledMapRenderer = new
-                OrthogonalTiledMapRenderer(tiledMap, spriteBatch);
-        orthogonalTiledMapRenderer.setView(cam);
-        orthogonalTiledMapRenderer.setMap(tiledMap);
-
     }
 
-    private void draw() {
-       spriteBatch.setProjectionMatrix(cam.projection);
-       spriteBatch.setTransformMatrix(cam.view);
-       orthogonalTiledMapRenderer.render();
-    }
+
     private void loadTextures() {
-       // mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1);
-
-      textureMen = new Texture(Gdx.files.internal("men.png"));
-      TextureRegion tmp[][] = TextureRegion.split(textureMen, textureMen.getWidth(), textureMen.getHeight());
-      textureRegions.put("player", tmp[0][0]);
-
-      textureMonster = new Texture(Gdx.files.internal("monster.png"));
-      TextureRegion textureMonst[][] = TextureRegion.split(textureMonster, textureMonster.getWidth(), textureMonster.getHeight());
-      textureRegions.put("monster", textureMonst[0][0]);
-
         textureGun = new Texture(Gdx.files.internal("gun.png"));
         TextureRegion textureGu[][] = TextureRegion.split(textureGun, textureGun.getWidth(), textureGun.getHeight());
         textureRegions.put("gun", textureGu[0][0]);
-
     }
 
-
-    public void SetCamera(float x, float y) {
-        this.cam.position.set(x, y, 0);
-        this.cam.update();
-    }
 
     @Override
     public void resize(int width, int height) {
@@ -119,39 +75,16 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
-    private void drawDebug() {
-        shapeRenderer.setProjectionMatrix(cam.projection);
-        shapeRenderer.setTransformMatrix(cam.view);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.end();
-    }
     @Override
     public void render(float delta) {
-       cam.update();
-       //cam.position.set(new Vector3(cam.position.x + 0.1f, cam.position.y, 0));
-        update(delta);
-       clearScreen();
-       draw();
-       drawDebug();
-
-       world.update(delta);
-       world.draw();
-       game.batch.begin();
-       game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
-       game.batch.end();
+      clearScreen();
+      world.update(delta);
+      world.draw();
+      game.batch.begin();
+      game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
+      game.batch.end();
     }
 
-    private void update(float delta) {
-
-      //  clearScreen();
-        draw();
-       // drawDebug();
-       // world.update(delta);
-       // world.draw();
-       // game.batch.begin();
-       // game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
-       // game.batch.end();
-    }
 
     @Override
     public void hide() {

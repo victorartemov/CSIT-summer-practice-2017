@@ -20,10 +20,12 @@ public class Player extends Actor implements Constant {
     private AnimatorMen animatorMen;
 
     //private MyGame game;
-    private static final float SPEED = 1f;
+    public static final float SPEED = 0.6f;
     //не удалять, это влияет на зомби
     private static final float height = 1.0f;
     private static final float width = 0.4f;
+   //float x;
+   //float y;
 
     private int countLife;
     private Weapon weapon;
@@ -47,12 +49,15 @@ public class Player extends Actor implements Constant {
         direction.put(Direction.DOWN, false);
     }
 
+    public static Map<Direction, Boolean> getDirection() {
+        return direction;
+    }
+
     private float mouseX = -1;
     private float mouseY = -1;
     private boolean findGun = false;
 
     public Player(Vector2 position, World world) {
-
         this.animatorMen = new AnimatorMen();
         animatorMen.create();
         animatorMen.setWorld(world);
@@ -61,10 +66,12 @@ public class Player extends Actor implements Constant {
         this.weapon = Weapon.NONE;
         this.world = world;
         this.position = position;
+
         setHeight(height * world.ppuY);
         setWidth(width * world.ppuX);
         setX(position.x * world.ppuX);
         setY(position.y * world.ppuY);
+
         addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
@@ -118,7 +125,6 @@ public class Player extends Actor implements Constant {
         else {
             setWidth(0);
         }
-
     }
 
 
