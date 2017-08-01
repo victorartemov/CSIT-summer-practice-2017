@@ -90,7 +90,7 @@ public class AnimatorMen implements ApplicationListener{
     }
 
     public void stay(Batch batch){
-        batch.draw(textureStayMen,x,y,42,100);
+        batch.draw(textureStayMen,x,y);
     }
     @Override
     public void resize(int width, int height) {
@@ -104,23 +104,23 @@ public class AnimatorMen implements ApplicationListener{
     public void walkDown(Batch batch){
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkDownAnimation.getKeyFrame(stateTime, true);
-        batch.draw(currentFrame, x, y, 42,100);
+        batch.draw(currentFrame, x, y);
     }
     public void walkUp(Batch batch) {
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkUpAnimation.getKeyFrame(stateTime, true);
-        batch.draw(currentFrame, x, y, 42, 100);
+        batch.draw(currentFrame, x, y);
     }
 
     public void walkLeft(Batch batch){
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkLeftAnimation.getKeyFrame(stateTime, true);
-        batch.draw(currentFrame, x, y, 42,100);
+        batch.draw(currentFrame, x, y);
     }
     public void walkRight(Batch batch){
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkRightAnimation.getKeyFrame(stateTime, true);
-        batch.draw(currentFrame, x, y, 42,100);
+        batch.draw(currentFrame, x, y);
     }
 
 
@@ -143,6 +143,14 @@ public class AnimatorMen implements ApplicationListener{
     public void setPositionMen(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 
     public void setSize(float width, float height) {

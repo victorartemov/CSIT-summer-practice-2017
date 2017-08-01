@@ -25,7 +25,6 @@ public class MyGame extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
         setScreen(new LoadScreen(this));
-       // setScreen(new GameScreen(this));
     }
 
     public void render() {

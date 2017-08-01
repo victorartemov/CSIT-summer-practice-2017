@@ -1,14 +1,13 @@
 package com.csiit.suumerpractic.lukoicat.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -22,14 +21,18 @@ import com.csiit.suumerpractic.lukoicat.prize.Health;
 import java.util.Map;
 
 
-/**
- * Created by Juli on 04.07.2017.
- */
-
 public class World extends Stage implements Constant {
 
     private static final float WORLD_WIDTH = 1280;
     private static final float WORLD_HEIGHT = 720;
+
+    private static final float GAME_SCREEN_WIDTH = 1280;
+    private static final float GAME_SCREEN_HEIGHT = 720;
+
+    //private static final float WIDTH = 608;
+   //private static final float HEIGHT = 1080;
+
+    private float gamePpuX, gamePpuY;
 
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     Viewport viewport;
@@ -42,7 +45,7 @@ public class World extends Stage implements Constant {
 
     MyGame game;
 
-    public float ppuX;
+    public float ppuX; //pixels per unit
     public float ppuY;
     public Actor selectedActor = null;
 
@@ -52,34 +55,40 @@ public class World extends Stage implements Constant {
         return player;
     }
 
-
     private Player player;
     private int zombieCount = 2;
 
-    public void setMap(){
+    public void setMap() {
         tiledMap = game.getAssetManager().get("maps/map_lykoi_1.1.tmx");
         orthogonalTiledMapRenderer = new
-            OrthogonalTiledMapRenderer(tiledMap, 1f);
+                OrthogonalTiledMapRenderer(tiledMap, 1f);
         orthogonalTiledMapRenderer.setView(cam);
         orthogonalTiledMapRenderer.setMap(tiledMap);
     }
+
+
     public World(int x, int y, boolean b, SpriteBatch spriteBatch, Map<String, TextureRegion> textureRegions, MyGame game) {
         this.cam = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        this.cam.position.set(WORLD_WIDTH/6, WORLD_WIDTH/6, 0);
+        this.cam.position.set(WORLD_WIDTH / 6, WORLD_WIDTH / 6, 0);
         this.cam.update();
 
         this.game = game;
-        viewport =  new FitViewport(WORLD_WIDTH/4, WORLD_HEIGHT/4, cam);
+        viewport = new FitViewport(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, cam);
         viewport.apply(true);
+        setViewport(viewport);
         shapeRenderer = new ShapeRenderer();
         setMap();
+
+        gamePpuX = GAME_SCREEN_WIDTH / cam.viewportWidth; //для персонажа
+        gamePpuY = GAME_SCREEN_HEIGHT / cam.viewportHeight; //для персонажа
 
         super.getViewport().update(x, y, b);
         this.textureRegions = textureRegions;
 
-        ppuX = getWidth() / CAMERA_WIDTH;
-        ppuY = getHeight() / CAMERA_HEIGHT;
-        player = new Player(new Vector2(3, 2), this);
+        ppuX = getWidth() / CAMERA_WIDTH; //пока что используется в зомби, не удалять
+        ppuY = getHeight() / CAMERA_HEIGHT; //пока что используется в зомби, не удалять
+
+        player = new Player(new Vector2(0,0), this);
         selectedActor = player;
 
         addActor(player);
@@ -102,30 +111,24 @@ public class World extends Stage implements Constant {
         return null;
     }
 
-
     public void update(float delta) {
+        cam.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
+       //if (getPlayer().getX() + orthogonalTiledMapRenderer.getViewBounds().getX() >= 485) {
+       //    if (getPlayer().getDirection().get(Direction.RIGHT)) {
+       //        cam.position.x += getPlayer().SPEED/10;
+       //    } else if (getPlayer().getDirection().get(Direction.LEFT)) {
+       //        cam.position.x -= getPlayer().SPEED/10;
+       //    }
+       //}
+        cam.update();
         orthogonalTiledMapRenderer.getBatch().setProjectionMatrix(cam.combined);
-        if(getPlayer().getX() + orthogonalTiledMapRenderer.getViewBounds().getX() >= 485 ) {
-            if (getPlayer().getDirection().get(Direction.RIGHT))
-            {
-                cam.position.x += getPlayer().SPEED/2;
-            } else if (getPlayer().getDirection().get(Direction.LEFT)) {
-                cam.position.x -= getPlayer().SPEED;
-            }
-        }
-        System.out.println("Coord map: " + orthogonalTiledMapRenderer.getViewBounds().getX() +"," + orthogonalTiledMapRenderer.getViewBounds().getY());
-        System.out.println("Coord player: (" + getPlayer().getX() + "," + getPlayer().getY() + ")");
-        //System.out.println("Coord Origin player: (" + getPlayer().getOriginX(). + "," + getPlayer().getOriginY() + ")");
-
-
         orthogonalTiledMapRenderer.setView(cam);
         orthogonalTiledMapRenderer.render();
-        cam.update();
         drawDebug();
 
         for (Actor actor : this.getActors()) {
             if (actor instanceof Player)
-                ((Player) actor).update(delta);
+                ((Player) actor).act(delta);
             else if (actor instanceof Zombie) {
                 ((Zombie) actor).update(delta);
             } else
@@ -133,15 +136,9 @@ public class World extends Stage implements Constant {
         }
     }
 
-    public void setPP(float x, float y) {
-        ppuX = x;
-        ppuY = y;
-    }
-
     //двигаем выбранного игрока
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
-
         moveSelected(x, y);
         for (Actor actor : getActors()) {
             if (actor instanceof Zombie) {
@@ -161,12 +158,11 @@ public class World extends Stage implements Constant {
         return true;
     }
 
-   //создание зомби
+    //создание зомби
     private void generateZombie(int count, ZombieType zombieType) {
         for (int i = 0; i < count; i++) {
             addActor(zombieType.choseZombie(this, CAMERA_WIDTH, CAMERA_HEIGHT));
         }
-
     }
 
     private void generateWeapon(Weapon weapon) {
@@ -200,6 +196,7 @@ public class World extends Stage implements Constant {
      */
     private void moveSelected(float x, float y) {
         if (selectedActor != null && selectedActor instanceof Player) {
+            //((Player) selectedActor).ChangeNavigation(x, this.getHeight() - y);
             ((Player) selectedActor).ChangeNavigation(x, this.getHeight() - y);
         }
     }
@@ -211,6 +208,37 @@ public class World extends Stage implements Constant {
         if (selectedActor != null && selectedActor instanceof Player) {
             ((Player) selectedActor).resetWay();
         }
+    }
+
+    //Обновление ppu, пока не используется, но может понадобиться
+    public void ppuRefrash() {
+        float newWidth = Gdx.graphics.getWidth();
+        float newHeight = Gdx.graphics.getHeight();
+
+        float gameScale = newHeight / newWidth > getGameScreenHeight() / getGameScreenWidth()
+                ? newWidth / getGameScreenWidth() : newHeight / getGameScreenHeight();
+
+
+        cam.viewportWidth = (int) (getGameScreenWidth() + (newWidth - getGameScreenWidth() * gameScale) / gameScale);
+        cam.viewportHeight = (int) (getGameScreenHeight()
+                + (newHeight - getGameScreenHeight() * gameScale) / gameScale);
+        gamePpuX = newWidth / cam.viewportWidth;
+        gamePpuY = newHeight / cam.viewportHeight;
+    }
+    public float getGameScreenWidth() {
+            return GAME_SCREEN_WIDTH;
+    }
+
+    public float getGameScreenHeight() {
+       return GAME_SCREEN_HEIGHT;
+    }
+
+    public float getGamePpuX() {
+        return gamePpuX;
+    }
+
+    public float getGamePpuY() {
+        return gamePpuY;
     }
 
 }

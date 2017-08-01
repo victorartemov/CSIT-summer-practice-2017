@@ -32,8 +32,8 @@ public class Weapon extends Actor implements Constant {
         this.state = State.NONE;
         this.velocity = new Vector2();
 
-        setHeight(height * world.ppuY);
-        setWidth(width * world.ppuX);
+        setHeight(16);
+        setWidth(16);
         setX(position.x * world.ppuX);
         setY(position.y * world.ppuY);
     }
@@ -44,7 +44,7 @@ public class Weapon extends Actor implements Constant {
 
     @Override
     public void draw(Batch batch, float parentAlfa) {
-        batch.draw(world.textureRegions.get(name), getX(), getY(), getWidth(), getHeight());
+        batch.draw(world.textureRegions.get(name), getX(), getY());
         batch.setColor(1, 1, 1, 1);
     }
 

@@ -9,15 +9,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.csiit.suumerpractic.lukoicat.MyGame;
 import com.csiit.suumerpractic.lukoicat.model.player.Player;
 import com.csiit.suumerpractic.lukoicat.model.World;
@@ -25,9 +16,7 @@ import com.csiit.suumerpractic.lukoicat.model.World;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Juli on 04.07.2017.
- */
+
 public class GameScreen implements Screen {
 
     final MyGame game;
@@ -66,7 +55,7 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
         this.width = width;
         this.height = height;
-       world.getViewport().update(width, height, true);
+        world.getViewport().update(width, height, true);
     }
 
     private void clearScreen() {
@@ -77,12 +66,15 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-      clearScreen();
-      world.update(delta);
-      world.draw();
-      game.batch.begin();
-      game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
-      game.batch.end();
+        clearScreen();
+        world.update(delta);
+        world.act(delta);
+        world.getCamera().update();
+        world.getBatch().setProjectionMatrix(world.getCamera().combined);
+        world.draw();
+        game.batch.begin();
+        game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
+        game.batch.end();
     }
 
 

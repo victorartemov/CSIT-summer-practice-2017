@@ -80,7 +80,7 @@ public class AnimatorZombie implements ApplicationListener {
     }
 
     public void stayZombie(Batch batch){
-        batch.draw(textureStayMen,x,y,42,100);
+        batch.draw(textureStayMen,x,y);
 
     }
     @Override
@@ -95,23 +95,23 @@ public class AnimatorZombie implements ApplicationListener {
     public void walkDown(Batch batch){
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkDownAnimation.getKeyFrame(stateTime, true);
-        batch.draw(currentFrame, x, y, 42,100);
+        batch.draw(currentFrame, x, y);
     }
     public void walkUp(Batch batch) {
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkUpAnimation.getKeyFrame(stateTime, true);
-        batch.draw(currentFrame, x, y, 42, 100);
+        batch.draw(currentFrame, x, y);
     }
 
     public void walkLeft(Batch batch){
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkLeftAnimation.getKeyFrame(stateTime, true);
-        batch.draw(currentFrame, x, y, 42,100);
+        batch.draw(currentFrame, x, y);
     }
     public void walkRight(Batch batch){
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = (TextureRegion) walkRightAnimation.getKeyFrame(stateTime, true);
-        batch.draw(currentFrame, x, y, 42,100);
+        batch.draw(currentFrame, x, y);
     }
 
     @Override

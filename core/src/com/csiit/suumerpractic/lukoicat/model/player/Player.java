@@ -1,5 +1,7 @@
 package com.csiit.suumerpractic.lukoicat.model.player;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -11,6 +13,7 @@ import com.csiit.suumerpractic.lukoicat.model.World;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
 import com.csiit.suumerpractic.lukoicat.prize.Weapon;
+import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +22,13 @@ public class Player extends Actor implements Constant {
 
     private AnimatorMen animatorMen;
 
-    //private MyGame game;
-    public static final float SPEED = 0.6f;
+    public static final float SPEED = 10f;
     //не удалять, это влияет на зомби
     private static final float height = 1.0f;
     private static final float width = 0.4f;
-   //float x;
-   //float y;
+
+    private static final Vector2 MOUSE_ZERO = new Vector2(645, 0); //координата начала карты
+    private Vector2 mouseClick;
 
     private int countLife;
     private Weapon weapon;
@@ -36,7 +39,8 @@ public class Player extends Actor implements Constant {
     //для выч. движения
     private Vector2 velocity = new Vector2();
     private State state = State.NONE;
-    private boolean findHealth = false;
+
+    private Vector2 globalPos;
 
     //Мап для направлений
     private static Map<Direction, Boolean> direction;
@@ -56,6 +60,9 @@ public class Player extends Actor implements Constant {
     private float mouseX = -1;
     private float mouseY = -1;
     private boolean findGun = false;
+    private boolean findHealth = false;
+
+    private boolean flag;
 
     public Player(Vector2 position, World world) {
         this.animatorMen = new AnimatorMen();
@@ -67,16 +74,49 @@ public class Player extends Actor implements Constant {
         this.world = world;
         this.position = position;
 
-        setHeight(height * world.ppuY);
-        setWidth(width * world.ppuX);
-        setX(position.x * world.ppuX);
-        setY(position.y * world.ppuY);
+        this.flag = true;
+        this.globalPos = new Vector2(0,0);
+        this.mouseClick = new Vector2(0,0);
+
+        setX(position.x / world.getGamePpuX());
+        setY(position.y / world.getGamePpuY());
+
 
         addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
         });
+    }
+
+    private void setGlobalPos() {
+        this.globalPos.x = getX();
+        this.globalPos.y = getY();
+    }
+
+
+    public void refresh() {
+        this.globalPos.set(getGlobalX(getX()), getGlobalY(getY()));
+    }
+
+    /** Calculate global x */
+    private float getGlobalX(float x) {
+        x /= world.getGamePpuX();
+        x += world.getCamera().position.x - world.getCamera().viewportWidth * 1 / 2;
+       // System.out.println("new x = " + x);
+        return x;
+    }
+
+    /** Calculate global y */
+    private float getGlobalY(float y) {
+        y /= world.getGamePpuY();
+       // y = world.getCamera().viewportHeight * 1 - y;
+       y += world.getCamera().position.y - world.getCamera().viewportHeight * 1 / 2;
+        return y;
+    }
+
+    public Vector2 getGlobalPos() {
+        return globalPos;
     }
 
     public void killZombie(Zombie zombie) {
@@ -100,7 +140,11 @@ public class Player extends Actor implements Constant {
         }
     }
 
-    public void update(float delta) {
+    @Override
+    public void act(float delta) {
+        //Мышь считывает нажатие на экране (а не на глобальной карте),
+        //надо сделать так, чтобы как-то запоминалось также значение клика именно на карте,
+        // и перс шел к нему, а не к координатам экрана
         if (state != State.DEAD) {
             if (direction.get(Direction.LEFT)) {
                 if (Math.abs(mouseX - getX()) < SPEED && Math.abs(mouseY - getY()) < SPEED) {
@@ -116,24 +160,29 @@ public class Player extends Actor implements Constant {
                 }
             }
             position.add(velocity.scl(delta));
-            setX(position.x * world.ppuX);
-            setY(position.y * world.ppuY);
+
+            System.out.println("mouse = " + mouseX + " " + mouseY);
+
+
+            setX(position.x / world.getGamePpuX());
+            setY(position.x / world.getGamePpuY());
 
             if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX < getX() || mouseX > getX()))
                 ChangeNavigation(mouseX, mouseY);
-        }
-        else {
+        } else {
             setWidth(0);
         }
     }
-
-
     @Override
     public void draw(Batch batch, float parentAlfa) {
         if (this.equals(world.selectedActor)) {
             batch.setColor(1f, 1f, 1f, 1f);
         }
-        animatorMen.setPositionMen(getX(), getY());
+        System.out.println("Player: " + getX() + " " + getY());
+        //setY((getY()/world.getGamePpuY() + 355)* world.getGamePpuY());
+       // animatorMen.setPositionMen(getX(),getY() + 355/ world.getGamePpuY());
+        animatorMen.setPositionMen(getX(),getY());
+        System.out.println("Draw: " + animatorMen.getX() + " " + animatorMen.getY());
         if (direction.get(Direction.LEFT)) {
             animatorMen.walkLeft(batch);
         } else if (direction.get(Direction.RIGHT)) {
@@ -153,17 +202,19 @@ public class Player extends Actor implements Constant {
 
         resetWay();
 
-        if (y > getY()) {
-            upPressed();
-        }
-        if (y < getY()) {
-            downPressed();
-        }
-        if (x < getX()) {
-            leftPressed();
-        }
-        if (x > (getPosition().x + width) * world.ppuX)
+       if (y > getY()) {
+           upPressed();
+       }
+       if (y < getY()) {
+           downPressed();
+       }
+       if (x < getX()) {
+           leftPressed();
+       }
+
+        if (x > (getX() + width) * world.getGamePpuX())
             rightPressed();
+
         processInput();
         if (!findGun) {
             findGun();
@@ -232,7 +283,6 @@ public class Player extends Actor implements Constant {
         }
 
     }
-
 
     public void setState(State state) {
         this.state = state;
