@@ -74,7 +74,7 @@ public class Player extends Actor implements Constant {
         this.mouseClick = new Vector2(0, 0);
 
         setX(position.x / world.getGamePpuX());
-        setY(position.y / world.getGamePpuY());
+        setY(position.y / world.getGamePpuX());
 
 
         addListener(new InputListener() {
@@ -90,13 +90,14 @@ public class Player extends Actor implements Constant {
     }
 
 
-    public void refresh() {
+    /*public void refresh() {
         this.globalPos.set(getGlobalX(getX()), getGlobalY(getY()));
     }
 
     /**
      * Calculate global x
      */
+    /*
     private float getGlobalX(float x) {
         x /= world.getGamePpuX();
         x += world.getCamera().position.x - world.getCamera().viewportWidth * 1 / 2;
@@ -107,12 +108,14 @@ public class Player extends Actor implements Constant {
     /**
      * Calculate global y
      */
+    /*
     private float getGlobalY(float y) {
         y /= world.getGamePpuY();
         // y = world.getCamera().viewportHeight * 1 - y;
         y += world.getCamera().position.y - world.getCamera().viewportHeight * 1 / 2;
         return y;
     }
+    */
 
     public Vector2 getGlobalPos() {
         return globalPos;
@@ -165,13 +168,15 @@ public class Player extends Actor implements Constant {
 
             setX(position.x / world.getGamePpuX());
             setY(position.y / world.getGamePpuY());
-          //  System.out.println(getY());
+            //  System.out.println(getY());
 
-            if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX -getX()> width * world.getGamePpuX() || mouseX > getX()))
+            if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX - getX() > width * world.getGamePpuX() || mouseX < getX() * world.getGamePpuX())) {
                 changeNavigation(mouseX, mouseY);
-            if(mouseX -getX()> width * world.getGamePpuX()){
-                changeNavigation(mouseX, mouseY);
+
             }
+          /*  if(mouseX -getX()> width * world.getGamePpuX()){
+                changeNavigation(mouseX, mouseY);
+            }*/
         } else {
             setWidth(0);
         }
@@ -211,7 +216,7 @@ public class Player extends Actor implements Constant {
         if (y < getY()) {
             downPressed();
         }
-        if (x < getX()) {
+        if (x < getX() * world.getGamePpuX()) {
             leftPressed();
         }
         if (x > (getX() + width) * world.getGamePpuX()) {

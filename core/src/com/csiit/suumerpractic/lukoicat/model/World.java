@@ -139,15 +139,14 @@ public class World extends Stage implements Constant {
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
 
-       // moveSelected(x/gamePpuX+cam.position.x, 0);
-        moveSelected(0, (this.getHeight()-y)/gamePpuY+cam.position.y);
-
-        // System.out.println((selectedActor.getY()));
-        //System.out.println((x - cam.viewportWidth + 2 * cam.position.x));
-        //System.out.println(x);
-        //System.out.println(cam.position.x);
+        // moveSelected(x/gamePpuX+cam.position.x, 0);
+        moveSelected(x + (gamePpuX * cam.position.x)-cam.viewportWidth, 0);
+//(this.getHeight() - y) / gamePpuY + cam.position.y
+        System.out.println((selectedActor.getX()));
+        System.out.println(x - cam.viewportWidth + 2 * cam.position.x);
+        // System.out.println(cam.position.x);
         // System.out.println((this.getHeight()-y)/gamePpuY+cam.position.y);
-        System.out.println(selectedActor.getX() + " - " + x + " - " + cam.position.x + " - " + ((x / 4) + cam.position.x));
+        // System.out.println(selectedActor.getX() + " - " + x + " - " + cam.position.x + " - "  + cam.position.x));
         for (Actor actor : getActors()) {
             if (actor instanceof Zombie) {
                 if (((Zombie) actor).canKill(x, this.getHeight() - y)) {
