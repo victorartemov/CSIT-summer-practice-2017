@@ -49,7 +49,7 @@ public class LoadScreen implements Screen {
         viewport = new FitViewport(WORLD_WIDTH / 2, WORLD_HEIGHT/2, cam);
         shapeRenderer = new ShapeRenderer();
 
-        game.getAssetManager().load("maps/map_lykoi_1.1.tmx", TiledMap.class);
+        game.getAssetManager().load("maps/map_lykoi_1.3.tmx", TiledMap.class);
     }
 
     private void draw() {

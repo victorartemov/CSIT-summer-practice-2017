@@ -20,7 +20,6 @@ import com.csiit.suumerpractic.lukoicat.prize.Health;
 
 import java.util.Map;
 
-
 public class World extends Stage implements Constant {
 
     private static final float WORLD_WIDTH = 1280;
@@ -30,7 +29,7 @@ public class World extends Stage implements Constant {
     private static final float GAME_SCREEN_HEIGHT = 720;
 
     //private static final float WIDTH = 608;
-   //private static final float HEIGHT = 1080;
+    //private static final float HEIGHT = 1080;
 
     private float gamePpuX, gamePpuY;
 
@@ -59,9 +58,8 @@ public class World extends Stage implements Constant {
     private int zombieCount = 2;
 
     public void setMap() {
-        tiledMap = game.getAssetManager().get("maps/map_lykoi_1.1.tmx");
-        orthogonalTiledMapRenderer = new
-                OrthogonalTiledMapRenderer(tiledMap, 1f);
+        tiledMap = game.getAssetManager().get("maps/map_lykoi_1.3.tmx");
+        orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f);
         orthogonalTiledMapRenderer.setView(cam);
         orthogonalTiledMapRenderer.setMap(tiledMap);
     }
@@ -88,7 +86,7 @@ public class World extends Stage implements Constant {
         ppuX = getWidth() / CAMERA_WIDTH; //пока что используется в зомби, не удалять
         ppuY = getHeight() / CAMERA_HEIGHT; //пока что используется в зомби, не удалять
 
-        player = new Player(new Vector2(0,0), this);
+        player = new Player(new Vector2(650, 550), this);
         selectedActor = player;
 
         addActor(player);
@@ -113,13 +111,13 @@ public class World extends Stage implements Constant {
 
     public void update(float delta) {
         cam.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
-       //if (getPlayer().getX() + orthogonalTiledMapRenderer.getViewBounds().getX() >= 485) {
-       //    if (getPlayer().getDirection().get(Direction.RIGHT)) {
-       //        cam.position.x += getPlayer().SPEED/10;
-       //    } else if (getPlayer().getDirection().get(Direction.LEFT)) {
-       //        cam.position.x -= getPlayer().SPEED/10;
-       //    }
-       //}
+        //if (getPlayer().getX() + orthogonalTiledMapRenderer.getViewBounds().getX() >= 485) {
+        //    if (getPlayer().getDirection().get(Direction.RIGHT)) {
+        //        cam.position.x += getPlayer().SPEED/10;
+        //    } else if (getPlayer().getDirection().get(Direction.LEFT)) {
+        //        cam.position.x -= getPlayer().SPEED/10;
+        //    }
+        //}
         cam.update();
         orthogonalTiledMapRenderer.getBatch().setProjectionMatrix(cam.combined);
         orthogonalTiledMapRenderer.setView(cam);
@@ -139,7 +137,14 @@ public class World extends Stage implements Constant {
     //двигаем выбранного игрока
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
-        moveSelected(x, y);
+
+        // moveSelected(x/gamePpuX+cam.position.x, 0);
+        moveSelected(x + (gamePpuX * cam.position.x)-cam.viewportWidth, (this.getHeight() - y) / gamePpuY + cam.position.y);
+        System.out.println((selectedActor.getX()));
+        System.out.println(x - cam.viewportWidth + 2 * cam.position.x);
+        // System.out.println(cam.position.x);
+        // System.out.println((this.getHeight()-y)/gamePpuY+cam.position.y);
+        // System.out.println(selectedActor.getX() + " - " + x + " - " + cam.position.x + " - "  + cam.position.x));
         for (Actor actor : getActors()) {
             if (actor instanceof Zombie) {
                 if (((Zombie) actor).canKill(x, this.getHeight() - y)) {
@@ -151,11 +156,20 @@ public class World extends Stage implements Constant {
         return true;
     }
 
+    public float getCameraHeight() {
+        return cam.viewportHeight;
+    }
+
+    public float getCamPositionY() {
+        return cam.position.y;
+    }
+
 
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         resetSelected();
         return true;
+
     }
 
     //создание зомби
@@ -196,8 +210,7 @@ public class World extends Stage implements Constant {
      */
     private void moveSelected(float x, float y) {
         if (selectedActor != null && selectedActor instanceof Player) {
-            //((Player) selectedActor).ChangeNavigation(x, this.getHeight() - y);
-            ((Player) selectedActor).ChangeNavigation(x, this.getHeight() - y);
+            ((Player) selectedActor).changeNavigation(x, y);
         }
     }
 
@@ -225,12 +238,13 @@ public class World extends Stage implements Constant {
         gamePpuX = newWidth / cam.viewportWidth;
         gamePpuY = newHeight / cam.viewportHeight;
     }
+
     public float getGameScreenWidth() {
-            return GAME_SCREEN_WIDTH;
+        return GAME_SCREEN_WIDTH;
     }
 
     public float getGameScreenHeight() {
-       return GAME_SCREEN_HEIGHT;
+        return GAME_SCREEN_HEIGHT;
     }
 
     public float getGamePpuX() {

@@ -1,19 +1,14 @@
 package com.csiit.suumerpractic.lukoicat.model.player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.csiit.suumerpractic.lukoicat.MyGame;
 import com.csiit.suumerpractic.lukoicat.animation.AnimatorMen;
 import com.csiit.suumerpractic.lukoicat.model.World;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
-import com.csiit.suumerpractic.lukoicat.prize.Weapon;
-import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,11 +70,11 @@ public class Player extends Actor implements Constant {
         this.position = position;
 
         this.flag = true;
-        this.globalPos = new Vector2(0,0);
-        this.mouseClick = new Vector2(0,0);
+        this.globalPos = new Vector2(0, 0);
+        this.mouseClick = new Vector2(0, 0);
 
         setX(position.x / world.getGamePpuX());
-        setY(position.y / world.getGamePpuY());
+        setY(position.y / world.getGamePpuX());
 
 
         addListener(new InputListener() {
@@ -95,25 +90,32 @@ public class Player extends Actor implements Constant {
     }
 
 
-    public void refresh() {
+    /*public void refresh() {
         this.globalPos.set(getGlobalX(getX()), getGlobalY(getY()));
     }
 
-    /** Calculate global x */
+    /**
+     * Calculate global x
+     */
+    /*
     private float getGlobalX(float x) {
         x /= world.getGamePpuX();
         x += world.getCamera().position.x - world.getCamera().viewportWidth * 1 / 2;
-       // System.out.println("new x = " + x);
+        // System.out.println("new x = " + x);
         return x;
     }
 
-    /** Calculate global y */
+    /**
+     * Calculate global y
+     */
+    /*
     private float getGlobalY(float y) {
         y /= world.getGamePpuY();
-       // y = world.getCamera().viewportHeight * 1 - y;
-       y += world.getCamera().position.y - world.getCamera().viewportHeight * 1 / 2;
+        // y = world.getCamera().viewportHeight * 1 - y;
+        y += world.getCamera().position.y - world.getCamera().viewportHeight * 1 / 2;
         return y;
     }
+    */
 
     public Vector2 getGlobalPos() {
         return globalPos;
@@ -159,30 +161,37 @@ public class Player extends Actor implements Constant {
                     return;
                 }
             }
-            position.add(velocity.scl(delta));
 
-            System.out.println("mouse = " + mouseX + " " + mouseY);
+            position.add(velocity.scl(delta));
+            // System.out.println("mouse = " + mouseX + " " + mouseY);
 
 
             setX(position.x / world.getGamePpuX());
-            setY(position.x / world.getGamePpuY());
+            setY(position.y / world.getGamePpuY());
+            //  System.out.println(getY());
 
-            if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX < getX() || mouseX > getX()))
-                ChangeNavigation(mouseX, mouseY);
+            if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX - getX() > width * world.getGamePpuX() || mouseX < getX() * world.getGamePpuX())) {
+                changeNavigation(mouseX, mouseY);
+
+            }
+          /*  if(mouseX -getX()> width * world.getGamePpuX()){
+                changeNavigation(mouseX, mouseY);
+            }*/
         } else {
             setWidth(0);
         }
     }
+
     @Override
     public void draw(Batch batch, float parentAlfa) {
         if (this.equals(world.selectedActor)) {
             batch.setColor(1f, 1f, 1f, 1f);
         }
-        System.out.println("Player: " + getX() + " " + getY());
+        //  System.out.println("Player: " + getX() + " " + getY());
         //setY((getY()/world.getGamePpuY() + 355)* world.getGamePpuY());
-       // animatorMen.setPositionMen(getX(),getY() + 355/ world.getGamePpuY());
-        animatorMen.setPositionMen(getX(),getY());
-        System.out.println("Draw: " + animatorMen.getX() + " " + animatorMen.getY());
+        // animatorMen.setPositionMen(getX(),getY() + 355/ world.getGamePpuY());
+        animatorMen.setPositionMen(getX(), getY());
+        //  System.out.println("Draw: " + animatorMen.getX() + " " + animatorMen.getY());
         if (direction.get(Direction.LEFT)) {
             animatorMen.walkLeft(batch);
         } else if (direction.get(Direction.RIGHT)) {
@@ -195,30 +204,30 @@ public class Player extends Actor implements Constant {
             animatorMen.stay(batch);
     }
 
-
-    public void ChangeNavigation(float x, float y) {
+    public void changeNavigation(float x, float y) {
         mouseX = x;
         mouseY = y;
 
         resetWay();
 
-       if (y > getY()) {
-           upPressed();
-       }
-       if (y < getY()) {
-           downPressed();
-       }
-       if (x < getX()) {
-           leftPressed();
-       }
-
-        if (x > (getX() + width) * world.getGamePpuX())
+        if (y > getY()) {
+            upPressed();
+        }
+        if (y < getY()) {
+            downPressed();
+        }
+        if (x < getX() * world.getGamePpuX()) {
+            leftPressed();
+        }
+        if (x > (getX() + width) * world.getGamePpuX()) {
             rightPressed();
-
+        }
         processInput();
         if (!findGun) {
-            findGun();
+            //    findGun();
         }
+        // System.out.println("getY "+getY());
+
 
     }
 
