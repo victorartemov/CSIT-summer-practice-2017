@@ -38,6 +38,7 @@ public class Zombie extends Actor implements Constant {
         this.life = life;
 
         this.position = vector2;
+        //System.out.println("Position zombie: (" + vector2.x + "," + vector2.y + ")");
         setX(position.x * world.ppuX);
         setY(position.y * world.ppuY);
 

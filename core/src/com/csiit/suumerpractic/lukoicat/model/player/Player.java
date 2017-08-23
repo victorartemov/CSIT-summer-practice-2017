@@ -17,7 +17,7 @@ public class Player extends Actor implements Constant {
 
     private AnimatorMen animatorMen;
 
-    public static final float SPEED = 10f;
+    public static final float SPEED = 15f;
     //не удалять, это влияет на зомби
     private static final float height = 1.0f;
     private static final float width = 0.4f;
@@ -26,6 +26,7 @@ public class Player extends Actor implements Constant {
     private Vector2 mouseClick;
 
     private int countLife;
+    private boolean stop = false; //если врезался в препятствие
     private Weapon weapon;
     public boolean isCat = false;
     private World world;
@@ -34,7 +35,7 @@ public class Player extends Actor implements Constant {
     //для выч. движения
     private Vector2 velocity = new Vector2();
     private State state = State.NONE;
-
+    private int collisDetect;
     private Vector2 globalPos;
 
     //Мап для направлений
@@ -47,6 +48,8 @@ public class Player extends Actor implements Constant {
         direction.put(Direction.UP, false);
         direction.put(Direction.DOWN, false);
     }
+
+
 
     public static Map<Direction, Boolean> getDirection() {
         return direction;
@@ -165,7 +168,6 @@ public class Player extends Actor implements Constant {
             position.add(velocity.scl(delta));
             // System.out.println("mouse = " + mouseX + " " + mouseY);
 
-
             setX(position.x / world.getGamePpuX());
             setY(position.y / world.getGamePpuY());
             //  System.out.println(getY());
@@ -187,11 +189,7 @@ public class Player extends Actor implements Constant {
         if (this.equals(world.selectedActor)) {
             batch.setColor(1f, 1f, 1f, 1f);
         }
-        //  System.out.println("Player: " + getX() + " " + getY());
-        //setY((getY()/world.getGamePpuY() + 355)* world.getGamePpuY());
-        // animatorMen.setPositionMen(getX(),getY() + 355/ world.getGamePpuY());
         animatorMen.setPositionMen(getX(), getY());
-        //  System.out.println("Draw: " + animatorMen.getX() + " " + animatorMen.getY());
         if (direction.get(Direction.LEFT)) {
             animatorMen.walkLeft(batch);
         } else if (direction.get(Direction.RIGHT)) {
@@ -226,8 +224,6 @@ public class Player extends Actor implements Constant {
         if (!findGun) {
             //    findGun();
         }
-        // System.out.println("getY "+getY());
-
 
     }
 
@@ -242,25 +238,27 @@ public class Player extends Actor implements Constant {
     }
 
     private void processInput() {
-        if (direction.get(Direction.LEFT))
-            getVelocity().x = -Player.SPEED;
+        if(collisDetect == -1) {
+            if (direction.get(Direction.LEFT))
+                getVelocity().x = -Player.SPEED;
 
-        if (direction.get(Direction.RIGHT))
-            getVelocity().x = Player.SPEED;
+            if (direction.get(Direction.RIGHT))
+                getVelocity().x = Player.SPEED;
 
-        if (direction.get(Direction.UP))
-            getVelocity().y = Player.SPEED;
+            if (direction.get(Direction.UP))
+                getVelocity().y = Player.SPEED;
 
-        if (direction.get(Direction.DOWN))
-            getVelocity().y = -Player.SPEED;
+            if (direction.get(Direction.DOWN))
+                getVelocity().y = -Player.SPEED;
 
-        if ((direction.get(Direction.LEFT) && direction.get(Direction.RIGHT)) ||
-                (!direction.get(Direction.LEFT) && (!direction.get(Direction.RIGHT))))
-            getVelocity().x = 0;
+            if ((direction.get(Direction.LEFT) && direction.get(Direction.RIGHT)) ||
+                    (!direction.get(Direction.LEFT) && (!direction.get(Direction.RIGHT))))
+                getVelocity().x = 0;
 
-        if ((direction.get(Direction.UP) && direction.get(Direction.DOWN)) ||
-                (!direction.get(Direction.UP) && (!direction.get(Direction.DOWN))))
-            getVelocity().y = 0;
+            if ((direction.get(Direction.UP) && direction.get(Direction.DOWN)) ||
+                    (!direction.get(Direction.UP) && (!direction.get(Direction.DOWN))))
+                getVelocity().y = 0;
+        }
     }
 
     private void findGun() {
@@ -342,4 +340,39 @@ public class Player extends Actor implements Constant {
         return state;
     }
 
+    public void stop() {
+        collisDetect = -1;
+        //-1 - нет коллизий
+        //0 - встретил коллизию, когда шел влево
+        //1 - ...вправо
+        //2 - ...вверх
+        //3 - ...вниз
+
+       if(direction.get(Direction.LEFT))
+       {
+           collisDetect = 0;
+         //  leftReleased();
+       }
+       if(direction.get(Direction.RIGHT))
+       {
+           collisDetect = 1;
+          // rightReleased();
+       }
+       if(direction.get(Direction.UP))
+       {
+           collisDetect = 2;
+          // upReleased();
+       }
+       if(direction.get(Direction.DOWN))
+       {
+           collisDetect = 3;
+          // downReleased();
+       }
+        resetWay();
+       // stop = true;
+    }
+
+    public void setCollisDetect(int collisDetect){
+        this.collisDetect = collisDetect;
+    }
 }

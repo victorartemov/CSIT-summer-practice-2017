@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -55,7 +57,7 @@ public class World extends Stage implements Constant {
     }
 
     private Player player;
-    private int zombieCount = 2;
+    private int zombieCount = 50;
 
     public void setMap() {
         tiledMap = game.getAssetManager().get("maps/map_lykoi_1.3.tmx");
@@ -86,13 +88,16 @@ public class World extends Stage implements Constant {
         ppuX = getWidth() / CAMERA_WIDTH; //пока что используется в зомби, не удалять
         ppuY = getHeight() / CAMERA_HEIGHT; //пока что используется в зомби, не удалять
 
-        player = new Player(new Vector2(650, 550), this);
+        player = new Player(new Vector2(860, 1390), this);
+       //player = new Player(new Vector2(800,400), this);
+
         selectedActor = player;
 
         addActor(player);
 
         generateZombie(zombieCount, ZombieType.NORMAL);
         generateWeapon(Weapon.GUN);
+        checkCollision();
     }
 
 
@@ -109,15 +114,32 @@ public class World extends Stage implements Constant {
         return null;
     }
 
+    public void checkCollision() {
+        MapObjects collisions = orthogonalTiledMapRenderer.getMap().getLayers().get(1).getObjects();
+        float posX = player.getX();
+        float posY = player.getY(); //getHeight()*this.getGamePpuY() -
+
+        // System.out.print(orthogonalTiledMapRenderer.getMap().getLayers().get(0).getName());
+        boolean collisDetect = false;
+        for (int i = 0; i < collisions.getCount(); i++) {
+            MapObject object = collisions.get(i);
+            if (posX > object.getProperties().get("x", Float.class) && (posX < (object.getProperties().get("x", Float.class) + object.getProperties().get("width", Float.class))) &&
+                    posY > object.getProperties().get("y", Float.class) &&
+                    (posY < (object.getProperties().get("y", Float.class) + object.getProperties().get("height", Float.class)))) {
+
+                System.out.println("Collision detected " + object.getName());
+                player.stop();
+                collisDetect = true;
+            }
+            else if(collisDetect == false){
+                player.setCollisDetect(-1);
+            }
+        }
+    }
     public void update(float delta) {
+        //ppuRefrash();
+        checkCollision();
         cam.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
-        //if (getPlayer().getX() + orthogonalTiledMapRenderer.getViewBounds().getX() >= 485) {
-        //    if (getPlayer().getDirection().get(Direction.RIGHT)) {
-        //        cam.position.x += getPlayer().SPEED/10;
-        //    } else if (getPlayer().getDirection().get(Direction.LEFT)) {
-        //        cam.position.x -= getPlayer().SPEED/10;
-        //    }
-        //}
         cam.update();
         orthogonalTiledMapRenderer.getBatch().setProjectionMatrix(cam.combined);
         orthogonalTiledMapRenderer.setView(cam);
@@ -140,8 +162,8 @@ public class World extends Stage implements Constant {
 
         // moveSelected(x/gamePpuX+cam.position.x, 0);
         moveSelected(x + (gamePpuX * cam.position.x)-cam.viewportWidth, (this.getHeight() - y) / gamePpuY + cam.position.y);
-        System.out.println((selectedActor.getX()));
-        System.out.println(x - cam.viewportWidth + 2 * cam.position.x);
+       // System.out.println((selectedActor.getX()));
+      //  System.out.println(x - cam.viewportWidth + 2 * cam.position.x);
         // System.out.println(cam.position.x);
         // System.out.println((this.getHeight()-y)/gamePpuY+cam.position.y);
         // System.out.println(selectedActor.getX() + " - " + x + " - " + cam.position.x + " - "  + cam.position.x));
@@ -175,7 +197,7 @@ public class World extends Stage implements Constant {
     //создание зомби
     private void generateZombie(int count, ZombieType zombieType) {
         for (int i = 0; i < count; i++) {
-            addActor(zombieType.choseZombie(this, CAMERA_WIDTH, CAMERA_HEIGHT));
+            addActor(zombieType.choseZombie(this, WORLD_WIDTH, WORLD_HEIGHT));
         }
     }
 

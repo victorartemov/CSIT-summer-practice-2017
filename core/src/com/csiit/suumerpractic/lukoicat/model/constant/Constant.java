@@ -47,7 +47,6 @@ public interface Constant {
                 case NORMAL:
                     zombie = new Zombie(world, vector2,  2, 2, 3, "monster");
                     break;
-
             }
             return zombie;
         }
