@@ -1,6 +1,7 @@
 package com.csiit.suumerpractic.lukoicat.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -127,7 +128,7 @@ public class World extends Stage implements Constant {
                     posY > object.getProperties().get("y", Float.class) &&
                     (posY < (object.getProperties().get("y", Float.class) + object.getProperties().get("height", Float.class)))) {
 
-                System.out.println("Collision detected " + object.getName());
+                //System.out.println("Collision detected " + object.getName());
                 player.stop();
                 collisDetect = true;
             }
@@ -136,6 +137,8 @@ public class World extends Stage implements Constant {
             }
         }
     }
+
+
     public void update(float delta) {
         //ppuRefrash();
         checkCollision();
@@ -277,5 +280,13 @@ public class World extends Stage implements Constant {
         return gamePpuY;
     }
 
+    @Override
+    public boolean keyDown (int keycode) {
+
+        if(keycode == Input.Keys.C){
+            player.reincarnate();
+        }
+        return false;
+    }
 }
 

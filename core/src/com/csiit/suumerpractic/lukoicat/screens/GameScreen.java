@@ -24,6 +24,7 @@ public class GameScreen implements Screen {
     public World world;
     private SpriteBatch spriteBatch;
     Texture textureGun;
+   // Texture textureButton;
 
     public Map<String, TextureRegion> textureRegions = new HashMap<String, TextureRegion>();
 
@@ -49,6 +50,10 @@ public class GameScreen implements Screen {
         textureGun = new Texture(Gdx.files.internal("gun.png"));
         TextureRegion textureGu[][] = TextureRegion.split(textureGun, textureGun.getWidth(), textureGun.getHeight());
         textureRegions.put("gun", textureGu[0][0]);
+
+       // textureButton = new Texture(Gdx.files.internal("button_cat.png"));
+       // TextureRegion textureB[][] = TextureRegion.split(textureButton, textureButton.getWidth(), textureButton.getHeight());
+       // textureRegions.put("button", textureB[0][0]);
     }
 
 
@@ -75,6 +80,8 @@ public class GameScreen implements Screen {
         world.draw();
         game.batch.begin();
         game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
+        game.font.draw(game.batch, "C - reincarnate in lykoi-cat", world.getWidth()+ 320, 50);
+        //game.batch.draw(textureButton,  world.getWidth()+ 320, 50);
         game.batch.end();
     }
 

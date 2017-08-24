@@ -39,6 +39,8 @@ public class AnimatorMen implements ApplicationListener{
     TextureRegion textureStayMen;
     boolean haveGun = false;
 
+    boolean isCat = false;
+
     float stateTime;
 
     public void setWorld(World world) {
@@ -52,38 +54,60 @@ public class AnimatorMen implements ApplicationListener{
 
     @Override
     public void create() {
-        if(haveGun){
-            walkSheet = new Texture(Gdx.files.internal("men_with_gun.gif"));
+
+        if(isCat){
+            walkSheet = new Texture(Gdx.files.internal("lykoi.gif"));
+            TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth(), walkSheet.getHeight()/4);
+
+            walkLeftFrames = new TextureRegion[2];
+            walkRightFrames = new TextureRegion[2];
+
+            walkRightFrames[0] = tmp[0][0];
+            walkRightFrames[1] = tmp[1][0];
+
+            walkLeftFrames[0] = tmp[2][0];
+            walkLeftFrames[1] = tmp[3][0];
+
+            walkDownAnimation = new Animation(0.25f,walkRightFrames);
+            walkUpAnimation = new Animation(0.25f,walkRightFrames);
+            walkLeftAnimation = new Animation(0.25f,walkLeftFrames);
+            walkRightAnimation = new Animation(0.25f,walkRightFrames);
+            textureStayMen = tmp[0][0];
         }
         else {
-            walkSheet = new Texture(Gdx.files.internal("men_all.gif"));
+            if (haveGun) {
+                walkSheet = new Texture(Gdx.files.internal("men_with_gun.gif"));
+            } else {
+                walkSheet = new Texture(Gdx.files.internal("men_all.gif"));
+            }
+
+            TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth(), walkSheet.getHeight() / FRAME_ROWS);
+            if (haveGun)
+                textureStayMen = tmp[1][0];
+            else
+                textureStayMen = tmp[0][0];
+
+            walkDownFrames = new TextureRegion[2];
+            walkUpFrames = new TextureRegion[2];
+            walkLeftFrames = new TextureRegion[2];
+            walkRightFrames = new TextureRegion[2];
+
+            int indexD = 0;
+            int indexU = 0;
+            int indexR = 0;
+            int indexL = 0;
+            for (int i = 1; i < 3; i++) {
+                walkDownFrames[indexD++] = tmp[i][0];
+                walkUpFrames[indexU++] = tmp[i + 3][0];
+                walkRightFrames[indexR++] = tmp[i + 6][0];
+                walkLeftFrames[indexL++] = tmp[i + 9][0];
+            }
+
+            walkDownAnimation = new Animation(0.25f, walkDownFrames);
+            walkUpAnimation = new Animation(0.25f, walkUpFrames);
+            walkLeftAnimation = new Animation(0.25f, walkLeftFrames);
+            walkRightAnimation = new Animation(0.25f, walkRightFrames);
         }
-        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth(), walkSheet.getHeight()/FRAME_ROWS);
-        if(haveGun)
-            textureStayMen = tmp[1][0];
-        else
-            textureStayMen = tmp[0][0];
-
-        walkDownFrames = new TextureRegion[2];
-        walkUpFrames = new TextureRegion[2];
-        walkLeftFrames = new TextureRegion[2];
-        walkRightFrames = new TextureRegion[2];
-
-       int indexD = 0;
-       int indexU = 0;
-       int indexR = 0;
-       int indexL = 0;
-       for (int i = 1; i < 3; i++) {
-           walkDownFrames[indexD++] = tmp[i][0];
-           walkUpFrames[indexU++] = tmp[i+3][0];
-           walkRightFrames[indexR++] = tmp[i+6][0];
-           walkLeftFrames[indexL++] = tmp[i+9][0];
-       }
-
-        walkDownAnimation = new Animation(0.25f, walkDownFrames);
-        walkUpAnimation = new Animation(0.25f, walkUpFrames);
-        walkLeftAnimation = new Animation(0.25f, walkLeftFrames);
-        walkRightAnimation = new Animation(0.25f, walkRightFrames);
 
         spriteBatch = new SpriteBatch();
         stateTime = 0f;
@@ -156,5 +180,14 @@ public class AnimatorMen implements ApplicationListener{
     public void setSize(float width, float height) {
         this.width = width;
         this.height = height;
+    }
+
+    public void reincarnate() {
+        if(isCat == false){
+            isCat = true;
+        }
+        else {
+            isCat = false;
+        }
     }
 }

@@ -93,33 +93,6 @@ public class Player extends Actor implements Constant {
     }
 
 
-    /*public void refresh() {
-        this.globalPos.set(getGlobalX(getX()), getGlobalY(getY()));
-    }
-
-    /**
-     * Calculate global x
-     */
-    /*
-    private float getGlobalX(float x) {
-        x /= world.getGamePpuX();
-        x += world.getCamera().position.x - world.getCamera().viewportWidth * 1 / 2;
-        // System.out.println("new x = " + x);
-        return x;
-    }
-
-    /**
-     * Calculate global y
-     */
-    /*
-    private float getGlobalY(float y) {
-        y /= world.getGamePpuY();
-        // y = world.getCamera().viewportHeight * 1 - y;
-        y += world.getCamera().position.y - world.getCamera().viewportHeight * 1 / 2;
-        return y;
-    }
-    */
-
     public Vector2 getGlobalPos() {
         return globalPos;
     }
@@ -184,12 +157,17 @@ public class Player extends Actor implements Constant {
         }
     }
 
+
     @Override
     public void draw(Batch batch, float parentAlfa) {
         if (this.equals(world.selectedActor)) {
             batch.setColor(1f, 1f, 1f, 1f);
         }
+        //this.animatorMen = new AnimatorMen();
+
         animatorMen.setPositionMen(getX(), getY());
+
+       // animatorMen.create();
         if (direction.get(Direction.LEFT)) {
             animatorMen.walkLeft(batch);
         } else if (direction.get(Direction.RIGHT)) {
@@ -222,7 +200,7 @@ public class Player extends Actor implements Constant {
         }
         processInput();
         if (!findGun) {
-            //    findGun();
+                findGun();
         }
 
     }
@@ -351,28 +329,34 @@ public class Player extends Actor implements Constant {
        if(direction.get(Direction.LEFT))
        {
            collisDetect = 0;
-         //  leftReleased();
        }
        if(direction.get(Direction.RIGHT))
        {
            collisDetect = 1;
-          // rightReleased();
        }
        if(direction.get(Direction.UP))
        {
            collisDetect = 2;
-          // upReleased();
        }
        if(direction.get(Direction.DOWN))
        {
            collisDetect = 3;
-          // downReleased();
        }
         resetWay();
-       // stop = true;
     }
 
     public void setCollisDetect(int collisDetect){
         this.collisDetect = collisDetect;
+    }
+
+    public void reincarnate() {
+        if(isCat == false){
+            isCat = true;
+        }
+        else {
+            isCat = false;
+        }
+        animatorMen.reincarnate();
+        animatorMen.create();
     }
 }
