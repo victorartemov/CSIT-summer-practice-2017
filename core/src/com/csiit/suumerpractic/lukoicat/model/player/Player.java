@@ -9,6 +9,7 @@ import com.csiit.suumerpractic.lukoicat.animation.AnimatorMen;
 import com.csiit.suumerpractic.lukoicat.model.World;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
 import com.csiit.suumerpractic.lukoicat.model.zombie.Zombie;
+import sun.nio.cs.ext.MacHebrew;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,31 +18,30 @@ public class Player extends Actor implements Constant {
 
     private AnimatorMen animatorMen;
 
-    public static final float SPEED = 15f;
-    //не удалять, это влияет на зомби
-    private static final float height = 1.0f;
-    private static final float width = 0.4f;
-
-    private static final Vector2 MOUSE_ZERO = new Vector2(645, 0); //координата начала карты
-    private Vector2 mouseClick;
+    private static final float SPEED;
 
     private int countLife;
-    private boolean stop = false; //если врезался в препятствие
-    private Weapon weapon;
-    public boolean isCat = false;
+    private boolean isCat;
     private World world;
-    private Vector2 position = new Vector2();
+    private Vector2 position;
 
     //для выч. движения
-    private Vector2 velocity = new Vector2();
-    private State state = State.NONE;
+    private Vector2 velocity;
+    private State state;
     private int collisDetect;
-    private Vector2 globalPos;
+    private Weapon weapon;
 
     //Мап для направлений
     private static Map<Direction, Boolean> direction;
 
+    private float mouseX;
+    private float mouseY;
+    private boolean findGun;
+    private boolean flag;
+    private float xW, yW, x, y;
+
     static {
+        SPEED = 15f;
         direction = new HashMap<Direction, Boolean>();
         direction.put(Direction.LEFT, false);
         direction.put(Direction.RIGHT, false);
@@ -50,65 +50,31 @@ public class Player extends Actor implements Constant {
     }
 
 
-
-    public static Map<Direction, Boolean> getDirection() {
-        return direction;
-    }
-
-    private float mouseX = -1;
-    private float mouseY = -1;
-    private boolean findGun = false;
-    private boolean findHealth = false;
-
-    private boolean flag;
-
     public Player(Vector2 position, World world) {
         this.animatorMen = new AnimatorMen();
-        animatorMen.create();
-        animatorMen.setWorld(world);
-        animatorMen.setSize(getWidth(), getHeight());
-        this.countLife = 10;
+        this.animatorMen.create();
+        this.animatorMen.setWorld(world);
+        this.animatorMen.setSize(getWidth(), getHeight());
         this.weapon = Weapon.NONE;
         this.world = world;
         this.position = position;
+        this.velocity = new Vector2();
 
+        this.countLife = 10;
+        this.isCat = false;
+        this.state = State.NONE;
+        this.mouseX = -1;
+        this.mouseY = -1;
+        this.findGun = false;
         this.flag = true;
-        this.globalPos = new Vector2(0, 0);
-        this.mouseClick = new Vector2(0, 0);
 
-        setX(position.x / world.getGamePpuX());
-        setY(position.y / world.getGamePpuX());
-
-
-        addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-        });
+        this.setX(position.x / world.getGamePpuX());
+        this.setY(position.y / world.getGamePpuX());
     }
 
-    private void setGlobalPos() {
-        this.globalPos.x = getX();
-        this.globalPos.y = getY();
-    }
-
-
-    public Vector2 getGlobalPos() {
-        return globalPos;
-    }
 
     public void killZombie(Zombie zombie) {
         zombie.makeDamage();
-    }
-
-    public int getCountLife() {
-        return countLife;
-    }
-
-
-    public void setCountLife(int countLife) {
-        this.countLife = countLife;
-
     }
 
     public void toDamage() {
@@ -120,9 +86,6 @@ public class Player extends Actor implements Constant {
 
     @Override
     public void act(float delta) {
-        //Мышь считывает нажатие на экране (а не на глобальной карте),
-        //надо сделать так, чтобы как-то запоминалось также значение клика именно на карте,
-        // и перс шел к нему, а не к координатам экрана
         if (state != State.DEAD) {
             if (direction.get(Direction.LEFT)) {
                 if (Math.abs(mouseX - getX()) < SPEED && Math.abs(mouseY - getY()) < SPEED) {
@@ -137,15 +100,12 @@ public class Player extends Actor implements Constant {
                     return;
                 }
             }
-
             position.add(velocity.scl(delta));
-            // System.out.println("mouse = " + mouseX + " " + mouseY);
-
             setX(position.x / world.getGamePpuX());
             setY(position.y / world.getGamePpuY());
-            //  System.out.println(getY());
 
-            if (mouseX != -1 && mouseY != -1 && (mouseY > getY() || mouseY < getY() || mouseX - getX() > width * world.getGamePpuX() || mouseX < getX() * world.getGamePpuX())) {
+            if (mouseX != -1 && mouseY != -1 &&
+                    (mouseY > getY() || mouseY < getY() || mouseX - getX() > 1 || mouseX < getX() * world.getGamePpuX())) {
                 changeNavigation(mouseX, mouseY);
 
             }
@@ -155,19 +115,21 @@ public class Player extends Actor implements Constant {
         } else {
             setWidth(0);
         }
+        //говнокод, не смотреть( но иначе никак)хах
+        if (flag) {
+            xW = world.getWeapone().getX();
+            yW = world.getWeapone().getY();
+            flag = false;
+        }
     }
 
 
     @Override
     public void draw(Batch batch, float parentAlfa) {
-        if (this.equals(world.selectedActor)) {
-            batch.setColor(1f, 1f, 1f, 1f);
-        }
-        //this.animatorMen = new AnimatorMen();
 
         animatorMen.setPositionMen(getX(), getY());
 
-       // animatorMen.create();
+        // animatorMen.create();
         if (direction.get(Direction.LEFT)) {
             animatorMen.walkLeft(batch);
         } else if (direction.get(Direction.RIGHT)) {
@@ -188,21 +150,19 @@ public class Player extends Actor implements Constant {
 
         if (y > getY()) {
             upPressed();
-        }
-        if (y < getY()) {
+        } else {
             downPressed();
         }
         if (x < getX() * world.getGamePpuX()) {
             leftPressed();
-        }
-        if (x > (getX() + width) * world.getGamePpuX()) {
+        } else {
             rightPressed();
         }
-        processInput();
-        if (!findGun) {
-                findGun();
-        }
 
+        if (!findGun) {
+            findGun();
+        }
+        processInput();
     }
 
     public void resetWay() {
@@ -216,7 +176,7 @@ public class Player extends Actor implements Constant {
     }
 
     private void processInput() {
-        if(collisDetect == -1) {
+        if (collisDetect == -1) {
             if (direction.get(Direction.LEFT))
                 getVelocity().x = -Player.SPEED;
 
@@ -239,24 +199,15 @@ public class Player extends Actor implements Constant {
         }
     }
 
+    //все тормозит из-а присваивания переменных, никак иначе сделать не получается
+
     private void findGun() {
 
-        float xW = world.getWeapone().getX();
-        float yW = world.getWeapone().getY();
+        x = this.getX();
+        y = this.getY();
 
-        float xWeaponWidth = world.getWeapone().getWidth() + xW;
-        float yWeaponHeight = world.getWeapone().getHeight() + yW;
-
-        float x = this.getX();
-        float y = this.getY();
-
-        float xWidth = this.getWidth() + x;
-        float yHeight = this.getHeight() + y;
-
-        if (xW >= x && xW <= xWidth && xWeaponWidth >= x && xWeaponWidth <= xWidth) {
-            if (yW >= y && yW <= yHeight && yWeaponHeight >= y && yWeaponHeight <= yHeight) {
-                findGun = true;
-            }
+        if (!(xW > x + 30 || xW + 16 < x || yW + 20 < y || yW > y + 50)) {
+            findGun = true;
         }
 
         if (findGun) {
@@ -267,19 +218,6 @@ public class Player extends Actor implements Constant {
             animatorMen.setPositionMen(getX(), getY());
         }
 
-    }
-
-    public void setState(State state) {
-        this.state = state;
-
-    }
-
-    public Vector2 getPosition() {
-        return position;
-    }
-
-    public Vector2 getVelocity() {
-        return velocity;
     }
 
     private void leftPressed() {
@@ -314,10 +252,6 @@ public class Player extends Actor implements Constant {
         direction.get(direction.put(Direction.DOWN, false));
     }
 
-    public State getState() {
-        return state;
-    }
-
     public void stop() {
         collisDetect = -1;
         //-1 - нет коллизий
@@ -326,37 +260,52 @@ public class Player extends Actor implements Constant {
         //2 - ...вверх
         //3 - ...вниз
 
-       if(direction.get(Direction.LEFT))
-       {
-           collisDetect = 0;
-       }
-       if(direction.get(Direction.RIGHT))
-       {
-           collisDetect = 1;
-       }
-       if(direction.get(Direction.UP))
-       {
-           collisDetect = 2;
-       }
-       if(direction.get(Direction.DOWN))
-       {
-           collisDetect = 3;
-       }
+        if (direction.get(Direction.LEFT)) {
+            collisDetect = 0;
+        }
+        if (direction.get(Direction.RIGHT)) {
+            collisDetect = 1;
+        }
+        if (direction.get(Direction.UP)) {
+            collisDetect = 2;
+        }
+        if (direction.get(Direction.DOWN)) {
+            collisDetect = 3;
+        }
         resetWay();
     }
 
-    public void setCollisDetect(int collisDetect){
-        this.collisDetect = collisDetect;
-    }
-
     public void reincarnate() {
-        if(isCat == false){
+        if (!isCat) {
             isCat = true;
-        }
-        else {
+        } else {
             isCat = false;
         }
         animatorMen.reincarnate();
         animatorMen.create();
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
+    public int getCountLife() {
+        return countLife;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public void setCollisDetect(int collisDetect) {
+        this.collisDetect = collisDetect;
     }
 }

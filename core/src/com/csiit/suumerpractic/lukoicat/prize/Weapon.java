@@ -19,23 +19,21 @@ public class Weapon extends Actor implements Constant {
     private State state;
     private Vector2 position;
 
-    private final float height = 0.2f;
-    private final float width = 0.2f;
-
-    public Weapon(World world, Vector2 position, Weapon weaponeType, String name, int damage) {
+    public Weapon(World world, Vector2 position, Weapon weaponeType, String name) {
         this.weaponeType = weaponeType;
         this.name = name;
         this.world = world;
         this.position = position;
 
-        this.damage = damage;
+
         this.state = State.NONE;
         this.velocity = new Vector2();
 
         setHeight(16);
         setWidth(16);
-        setX(position.x * world.ppuX);
-        setY(position.y * world.ppuY);
+
+        setX(500);
+        setY(700);
     }
 
     public void setState(State state) {
@@ -52,6 +50,7 @@ public class Weapon extends Actor implements Constant {
         if (state == State.TAKEN) {
             setWidth(0);
             setHeight(0);
+            System.out.println(getWidth() + "-wW " + getHeight() + " -wH");
         }
     }
 

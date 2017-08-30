@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.csiit.suumerpractic.lukoicat.animation.AnimatorZombie;
 import com.csiit.suumerpractic.lukoicat.model.World;
 import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
+
 import java.util.Random;
 
 public class Zombie extends Actor implements Constant {
@@ -17,37 +18,35 @@ public class Zombie extends Actor implements Constant {
     private World world;
     private Vector2 position;
     private Vector2 velocity;
-    private int counter = 0;
+    private int counter;
     private Direction direction;
     private State state;
     private int life;
-    private String name;
 
 
-    public Zombie(World world, Vector2 vector2, float Radius, float SPEED, int life, String name) {
+    public Zombie(World world, Vector2 vector2, float Radius, float SPEED, int life) {
 
         this.animatorZombie = new AnimatorZombie();
         animatorZombie.create();
         animatorZombie.setWorld(world);
         animatorZombie.setSize(getWidth(), getHeight());
 
-        this.name = name;
-
         this.Radius = Radius;
         this.SPEED = SPEED;
         this.life = life;
 
         this.position = vector2;
-        //System.out.println("Position zombie: (" + vector2.x + "," + vector2.y + ")");
-        setX(position.x * world.ppuX);
-        setY(position.y * world.ppuY);
+        this.setX(position.x);
+        this.setY(position.y);
 
         this.velocity = new Vector2();
+        this.getVelocity().y = SPEED;
+
+        this.counter = 0;
         this.state = State.NONE;
         this.direction = Direction.NONE;
         this.world = world;
 
-        getVelocity().y = SPEED;
         setFirstDirection();
     }
 
@@ -59,10 +58,10 @@ public class Zombie extends Actor implements Constant {
         if (state == State.DEAD) {
             setWidth(0);
         } else {
-            changeDirection(delta);
+            changeDirection();
             position.add(velocity.scl(delta));
-            setX(position.x * world.ppuX);
-            setY(position.y * world.ppuY);
+            setX(position.x + (world.getWidth() / world.getPpuX()));
+            setY(position.y);
         }
     }
 
@@ -91,47 +90,39 @@ public class Zombie extends Actor implements Constant {
         return velocity;
     }
 
-    private void changeDirection(float delta) {
+    private void changeDirection() {
 
         if (counter > 50) {
             newDirection();
         } else counter++;
 
         if (canSeePlayer() && !canKill()) {
-            goToPlayer(delta, SPEED);
+            goToPlayer();
         }
-        if (canKill())
+        if (canKill()) {
             if (counter > 50) {
                 world.getPlayer().toDamage();
             }
+        }
     }
 
-    private void goToPlayer(float delta, float speed) {
+    private void goToPlayer() {
 
-        int pX = Math.round(world.getPlayer().getX());
-        int pY = Math.round(world.getPlayer().getY());
-        int x = Math.round(getX() + 1);
-        int y = Math.round(getY());
-
-        if (y < pY) {
+        if (getY() < world.getPlayer().getY()) {
             up();
-        } else if (y >= pY) {
+        } else {
             down();
         }
-        if (x >= pX) {
+        if (getX() >= world.getPlayer().getX()) {
             left();
-        } else if (x < pX) {
+        } else {
             right();
         }
     }
 
     private boolean canKill() {
-        int pX = Math.round(world.getPlayer().getX());
-        int pY = Math.round(world.getPlayer().getY());
-        int x = Math.round(getX());
-        int y = Math.round(getY());
-
-        return Math.abs(pX - x) <= world.getPlayer().getWidth()/2 && Math.abs(pY - y) <= world.getPlayer().getHeight()/2;
+        //80 и 30 размеры персонажа
+        return Math.abs(world.getPlayer().getX() - getX()) <= 30 / 2 && Math.abs(world.getPlayer().getY() - getY()) <= 80 / 2;
 
     }
 
@@ -139,15 +130,14 @@ public class Zombie extends Actor implements Constant {
 
         if (State.DEAD != world.getPlayer().getState()) {
 
-            float b = Math.abs(world.getPlayer().getPosition().x - getPosition().x);
-            float a = Math.abs(world.getPlayer().getPosition().y - getPosition().y);
+            float b = Math.abs(world.getPlayer().getPosition().x - getPosition().x * 2);
+            float a = Math.abs(world.getPlayer().getPosition().y - getPosition().y * 2);
             if (Math.sqrt((a * a + b * b)) < Radius) {
                 return true;
             }
         }
         return false;
     }
-
 
     private void setFirstDirection() {
         direction = Direction.UP;
@@ -197,8 +187,9 @@ public class Zombie extends Actor implements Constant {
     }
 
     public boolean canKill(float x, float y) {
-        float xZ = getX();
+        float xZ = getX() * 2;
         float yZ = getY();
+
         return (x >= xZ) && (x <= (xZ + 30)) && (y >= yZ) && (y <= (yZ + 100)) && canSeePlayer();
     }
 

@@ -12,7 +12,6 @@ import java.util.Random;
  * Created by Рената on 06.07.2017.
  */
 
-// мб создать один большой enum?
 public interface Constant {
     enum Direction {
         LEFT, RIGHT, UP, DOWN, NONE
@@ -23,14 +22,14 @@ public interface Constant {
     }
 
     enum Weapon {
-        NONE, STONE, GUN;
+        NONE, GUN;
 
         public com.csiit.suumerpractic.lukoicat.prize.Weapon makeWeapon(World world, float width, float height) {
             com.csiit.suumerpractic.lukoicat.prize.Weapon weapon = null;
             Vector2 vector2 = new Vector2(MathUtils.random(width), MathUtils.random(height));
             switch (this) {
                 case GUN:
-                    weapon = new com.csiit.suumerpractic.lukoicat.prize.Weapon(world, vector2, Weapon.GUN, "gun", 20);
+                    weapon = new com.csiit.suumerpractic.lukoicat.prize.Weapon(world, vector2, Weapon.GUN, "gun");
                     break;
             }
             return weapon;
@@ -42,10 +41,10 @@ public interface Constant {
 
         public Zombie choseZombie(World world, float width, float height) {
             Zombie zombie = null;
-            Vector2 vector2 = new Vector2(MathUtils.random(width), MathUtils.random(height));
+            Vector2 vector2 = new Vector2(MathUtils.random(400, 1000), MathUtils.random(335, 709));
             switch (this) {
                 case NORMAL:
-                    zombie = new Zombie(world, vector2,  2, 2, 3, "monster");
+                    zombie = new Zombie(world, vector2, 200, 2, 3);
                     break;
             }
             return zombie;

@@ -13,6 +13,7 @@ import com.csiit.suumerpractic.lukoicat.model.constant.Constant;
  */
 public class Health extends Actor implements Constant {
 
+  /*
     private World world;
     private String name;
 
@@ -61,10 +62,10 @@ public class Health extends Actor implements Constant {
 
     private void nextHealth() {
         //state = State.NONE;
-        setHeight(height * world.ppuY);
-        setWidth(width * world.ppuX);
-        setX(MathUtils.random(cameraWidht) * world.ppuY);
-        setY(MathUtils.random(cameraHeight) * world.ppuY);
+        setHeight(height * world.getGamePpuY());
+        setWidth(width * world.getGamePpuX());
+        setX(MathUtils.random(cameraWidht) * world.getPpuY());
+        setY(MathUtils.random(cameraHeight) * world.getPpuX());
     }
 
     public void setState(State state) {
@@ -87,6 +88,6 @@ public class Health extends Actor implements Constant {
     public Vector2 getPosition() {
         return position;
     }
-
+*/
 
 }

@@ -25,48 +25,33 @@ import java.util.Map;
 
 public class World extends Stage implements Constant {
 
+    public Map<String, TextureRegion> textureRegions;
+
     private static final float WORLD_WIDTH = 1280;
     private static final float WORLD_HEIGHT = 720;
 
     private static final float GAME_SCREEN_WIDTH = 1280;
     private static final float GAME_SCREEN_HEIGHT = 720;
 
-    //private static final float WIDTH = 608;
-    //private static final float HEIGHT = 1080;
-
-    private float gamePpuX, gamePpuY;
+    private float gamePpuX;
+    private float gamePpuY;
 
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
-    Viewport viewport;
+    private Viewport viewport;
 
-    public static float CAMERA_WIDTH = 8f;
-    public static float CAMERA_HEIGHT = 5f;
-    public OrthographicCamera cam;
-    ShapeRenderer shapeRenderer;
-    TiledMap tiledMap;
+    private static float CAMERA_WIDTH = 8f;
+    private static float CAMERA_HEIGHT = 5f;
+    private OrthographicCamera cam;
+    private ShapeRenderer shapeRenderer;
+    private TiledMap tiledMap;
 
-    MyGame game;
+    private MyGame game;
 
-    public float ppuX; //pixels per unit
-    public float ppuY;
-    public Actor selectedActor = null;
-
-    public Map<String, TextureRegion> textureRegions;
-
-    public Player getPlayer() {
-        return player;
-    }
+    private float ppuX; //pixels per unit
+    private float ppuY;
 
     private Player player;
-    private int zombieCount = 50;
-
-    public void setMap() {
-        tiledMap = game.getAssetManager().get("maps/map_lykoi_1.3.tmx");
-        orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f);
-        orthogonalTiledMapRenderer.setView(cam);
-        orthogonalTiledMapRenderer.setMap(tiledMap);
-    }
-
+    private int zombieCount = 10;
 
     public World(int x, int y, boolean b, SpriteBatch spriteBatch, Map<String, TextureRegion> textureRegions, MyGame game) {
         this.cam = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
@@ -76,68 +61,27 @@ public class World extends Stage implements Constant {
         this.game = game;
         viewport = new FitViewport(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, cam);
         viewport.apply(true);
-        setViewport(viewport);
         shapeRenderer = new ShapeRenderer();
-        setMap();
+        this.setViewport(viewport);
+        this.setMap();
 
-        gamePpuX = GAME_SCREEN_WIDTH / cam.viewportWidth; //для персонажа
-        gamePpuY = GAME_SCREEN_HEIGHT / cam.viewportHeight; //для персонажа
+        this.gamePpuX = GAME_SCREEN_WIDTH / cam.viewportWidth; //для персонажа
+        this.gamePpuY = GAME_SCREEN_HEIGHT / cam.viewportHeight; //для персонажа
+
+        this.ppuX = getWidth() / CAMERA_WIDTH; //пока что используется в зомби, не удалять
+        this.ppuY = getHeight() / CAMERA_HEIGHT; //пока что используется в зомби, не удалять
 
         super.getViewport().update(x, y, b);
         this.textureRegions = textureRegions;
 
-        ppuX = getWidth() / CAMERA_WIDTH; //пока что используется в зомби, не удалять
-        ppuY = getHeight() / CAMERA_HEIGHT; //пока что используется в зомби, не удалять
 
-        player = new Player(new Vector2(860, 1390), this);
-       //player = new Player(new Vector2(800,400), this);
-
-        selectedActor = player;
-
+        this.player = new Player(new Vector2(860, 1390), this);
         addActor(player);
 
         generateZombie(zombieCount, ZombieType.NORMAL);
         generateWeapon(Weapon.GUN);
         checkCollision();
     }
-
-
-    private void drawDebug() {
-        shapeRenderer.setProjectionMatrix(cam.projection);
-        shapeRenderer.setTransformMatrix(cam.view);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.end();
-    }
-
-    public Player getSelectedActor() {
-        if (selectedActor instanceof Player)
-            return (Player) selectedActor;
-        return null;
-    }
-
-    public void checkCollision() {
-        MapObjects collisions = orthogonalTiledMapRenderer.getMap().getLayers().get(1).getObjects();
-        float posX = player.getX();
-        float posY = player.getY(); //getHeight()*this.getGamePpuY() -
-
-        // System.out.print(orthogonalTiledMapRenderer.getMap().getLayers().get(0).getName());
-        boolean collisDetect = false;
-        for (int i = 0; i < collisions.getCount(); i++) {
-            MapObject object = collisions.get(i);
-            if (posX > object.getProperties().get("x", Float.class) && (posX < (object.getProperties().get("x", Float.class) + object.getProperties().get("width", Float.class))) &&
-                    posY > object.getProperties().get("y", Float.class) &&
-                    (posY < (object.getProperties().get("y", Float.class) + object.getProperties().get("height", Float.class)))) {
-
-                //System.out.println("Collision detected " + object.getName());
-                player.stop();
-                collisDetect = true;
-            }
-            else if(collisDetect == false){
-                player.setCollisDetect(-1);
-            }
-        }
-    }
-
 
     public void update(float delta) {
         //ppuRefrash();
@@ -151,7 +95,7 @@ public class World extends Stage implements Constant {
 
         for (Actor actor : this.getActors()) {
             if (actor instanceof Player)
-                ((Player) actor).act(delta);
+                actor.act(delta);
             else if (actor instanceof Zombie) {
                 ((Zombie) actor).update(delta);
             } else
@@ -159,97 +103,75 @@ public class World extends Stage implements Constant {
         }
     }
 
-    //двигаем выбранного игрока
-    @Override
-    public boolean touchDown(int x, int y, int pointer, int button) {
+    private void setMap() {
+        tiledMap = game.getAssetManager().get("maps/map_lykoi_1.3.tmx");
+        orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f);
+        orthogonalTiledMapRenderer.setView(cam);
+        orthogonalTiledMapRenderer.setMap(tiledMap);
+    }
 
-        // moveSelected(x/gamePpuX+cam.position.x, 0);
-        moveSelected(x + (gamePpuX * cam.position.x)-cam.viewportWidth, (this.getHeight() - y) / gamePpuY + cam.position.y);
-       // System.out.println((selectedActor.getX()));
-      //  System.out.println(x - cam.viewportWidth + 2 * cam.position.x);
-        // System.out.println(cam.position.x);
-        // System.out.println((this.getHeight()-y)/gamePpuY+cam.position.y);
-        // System.out.println(selectedActor.getX() + " - " + x + " - " + cam.position.x + " - "  + cam.position.x));
-        for (Actor actor : getActors()) {
-            if (actor instanceof Zombie) {
-                if (((Zombie) actor).canKill(x, this.getHeight() - y)) {
-                    player.killZombie((Zombie) actor);
-                    System.out.println("makeDamage");
-                }
+    private void drawDebug() {
+        shapeRenderer.setProjectionMatrix(cam.projection);
+        shapeRenderer.setTransformMatrix(cam.view);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.end();
+    }
+
+    private void checkCollision() {
+        MapObjects collisions = orthogonalTiledMapRenderer.getMap().getLayers().get(1).getObjects();
+        float posX = player.getX();
+        float posY = player.getY(); //getHeight()*this.getGamePpuY() -
+
+        boolean collisDetect = false;
+        for (int i = 0; i < collisions.getCount(); i++) {
+            MapObject object = collisions.get(i);
+            if (posX > object.getProperties().get("x", Float.class) && (posX < (object.getProperties().get("x", Float.class) + object.getProperties().get("width", Float.class))) &&
+                    posY > object.getProperties().get("y", Float.class) &&
+                    (posY < (object.getProperties().get("y", Float.class) + object.getProperties().get("height", Float.class)))) {
+
+                player.stop();
+                collisDetect = true;
+            } else if (!collisDetect) {
+                player.setCollisDetect(-1);
             }
         }
-        return true;
-    }
-
-    public float getCameraHeight() {
-        return cam.viewportHeight;
-    }
-
-    public float getCamPositionY() {
-        return cam.position.y;
-    }
-
-
-    @Override
-    public boolean touchUp(int x, int y, int pointer, int button) {
-        resetSelected();
-        return true;
-
     }
 
     //создание зомби
     private void generateZombie(int count, ZombieType zombieType) {
         for (int i = 0; i < count; i++) {
-            addActor(zombieType.choseZombie(this, WORLD_WIDTH, WORLD_HEIGHT));
+            addActor(zombieType.choseZombie(this, CAMERA_WIDTH, CAMERA_HEIGHT));
         }
     }
 
+    //coздание оружия
     private void generateWeapon(Weapon weapon) {
         addActor(weapon.makeWeapon(this, CAMERA_WIDTH, CAMERA_HEIGHT));
     }
 
-    public com.csiit.suumerpractic.lukoicat.prize.Weapon getWeapone() {
-        com.csiit.suumerpractic.lukoicat.prize.Weapon weapon = null;
-        for (Actor actor : this.getActors()) {
-            if (actor instanceof com.csiit.suumerpractic.lukoicat.prize.Weapon)
-                weapon = (com.csiit.suumerpractic.lukoicat.prize.Weapon) actor;
-        }
-        return weapon;
-    }
-
-    public Health getHealth() {
-        Health health = null;
-        for (Actor actor : this.getActors()) {
-            if (actor instanceof Health)
-                health = (Health) actor;
-        }
-        return health;
-    }
-
-
-    /**
-     * Передвижение выбранного актера по параметрам
-     *
-     * @param x
-     * @param y
-     */
+    // Передвижение выбранного актера по параметрам
     private void moveSelected(float x, float y) {
-        if (selectedActor != null && selectedActor instanceof Player) {
-            ((Player) selectedActor).changeNavigation(x, y);
+        if (player != null) {
+            player.changeNavigation(x, y);
         }
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     /**
      * Сбрасываем текущий вектор и направление движения
      */
+
     private void resetSelected() {
-        if (selectedActor != null && selectedActor instanceof Player) {
-            ((Player) selectedActor).resetWay();
+        if (player != null) {
+            player.resetWay();
         }
     }
 
     //Обновление ppu, пока не используется, но может понадобиться
-    public void ppuRefrash() {
+   /* public void ppuRefrash() {
         float newWidth = Gdx.graphics.getWidth();
         float newHeight = Gdx.graphics.getHeight();
 
@@ -262,15 +184,7 @@ public class World extends Stage implements Constant {
                 + (newHeight - getGameScreenHeight() * gameScale) / gameScale);
         gamePpuX = newWidth / cam.viewportWidth;
         gamePpuY = newHeight / cam.viewportHeight;
-    }
-
-    public float getGameScreenWidth() {
-        return GAME_SCREEN_WIDTH;
-    }
-
-    public float getGameScreenHeight() {
-        return GAME_SCREEN_HEIGHT;
-    }
+    }*/
 
     public float getGamePpuX() {
         return gamePpuX;
@@ -280,13 +194,50 @@ public class World extends Stage implements Constant {
         return gamePpuY;
     }
 
-    @Override
-    public boolean keyDown (int keycode) {
+    public float getPpuX() {
+        return ppuX;
+    }
 
-        if(keycode == Input.Keys.C){
+    public float getPpuY() {
+        return ppuY;
+    }
+
+    public com.csiit.suumerpractic.lukoicat.prize.Weapon getWeapone() {
+        com.csiit.suumerpractic.lukoicat.prize.Weapon weapon = null;
+        for (Actor actor : this.getActors()) {
+            if (actor instanceof com.csiit.suumerpractic.lukoicat.prize.Weapon)
+                weapon = (com.csiit.suumerpractic.lukoicat.prize.Weapon) actor;
+        }
+        return weapon;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.C) {
             player.reincarnate();
         }
         return false;
+    }
+
+    @Override
+    public boolean touchUp(int x, int y, int pointer, int button) {
+        resetSelected();
+        return true;
+    }
+
+    //двигаем выбранного игрока
+    @Override
+    public boolean touchDown(int x, int y, int pointer, int button) {
+
+        moveSelected(x + (gamePpuX * cam.position.x) - cam.viewportWidth, (this.getHeight() - y) / gamePpuY + cam.position.y);
+        for (Actor actor : getActors()) {
+            if (actor instanceof Zombie) {
+                if (((Zombie) actor).canKill(x + (gamePpuX * cam.position.x) - cam.viewportWidth, (this.getHeight() - y) / gamePpuY + cam.position.y)) {
+                    player.killZombie((Zombie) actor);
+                }
+            }
+        }
+        return true;
     }
 }
 
