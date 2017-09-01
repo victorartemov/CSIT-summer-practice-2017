@@ -48,7 +48,6 @@ public class LoadScreen implements Screen {
         cam.update();
         viewport = new FitViewport(WORLD_WIDTH / 2, WORLD_HEIGHT/2, cam);
         shapeRenderer = new ShapeRenderer();
-
         game.getAssetManager().load("maps/map_lykoi_1.3.tmx", TiledMap.class);
     }
 
@@ -62,6 +61,9 @@ public class LoadScreen implements Screen {
                         PROGRESS_BAR_HEIGHT / 2,
                 progress * PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT);
         shapeRenderer.end();
+        game.batch.begin();
+        game.font.draw(game.batch, "В деревне N в полнолуние всегда происходили странные вещи: животные начинали себя странно вести, птицы падали замертво, пропадали люди... Но в этот день луна светила ярче, чем обычно. В полночь многие люди начинали чувствовать безудержную жажду и голод, но дальше было хуже - прикончив все запасы пищи, люди начали нападать сначала на животных, а потом и на других живых людей. В то время, как деревня была охвачена страхом и хаосом, один человек вглянул через окно на полную луну и обнаружил в себе необычную способность...", 0, 0);
+        game.batch.end();
     }
     @Override
     public void render(float delta) {
@@ -77,6 +79,7 @@ public class LoadScreen implements Screen {
     }
     private void update() {
         if (game.getAssetManager().update()) {
+           // game.setScreen(new FirstScreen());
            game.setScreen(new GameScreen(game));
         } else {
             progress = game.getAssetManager().getProgress();

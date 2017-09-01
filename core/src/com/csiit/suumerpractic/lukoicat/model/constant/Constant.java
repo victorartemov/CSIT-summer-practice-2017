@@ -8,9 +8,6 @@ import com.csiit.suumerpractic.lukoicat.prize.Weapon;
 
 import java.util.Random;
 
-/**
- * Created by Рената on 06.07.2017.
- */
 
 public interface Constant {
     enum Direction {
@@ -23,7 +20,6 @@ public interface Constant {
 
     enum Weapon {
         NONE, GUN;
-
         public com.csiit.suumerpractic.lukoicat.prize.Weapon makeWeapon(World world, float width, float height) {
             com.csiit.suumerpractic.lukoicat.prize.Weapon weapon = null;
             Vector2 vector2 = new Vector2(MathUtils.random(width), MathUtils.random(height));
@@ -44,7 +40,7 @@ public interface Constant {
             Vector2 vector2 = new Vector2(MathUtils.random(400, 1000), MathUtils.random(335, 709));
             switch (this) {
                 case NORMAL:
-                    zombie = new Zombie(world, vector2, 200, 2, 3);
+                    zombie = new Zombie(world, vector2, 200, 20, 3);
                     break;
             }
             return zombie;

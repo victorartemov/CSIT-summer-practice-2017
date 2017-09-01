@@ -98,9 +98,12 @@ public class World extends Stage implements Constant {
                 actor.act(delta);
             else if (actor instanceof Zombie) {
                 ((Zombie) actor).update(delta);
-            } else
-                ((com.csiit.suumerpractic.lukoicat.prize.Weapon) actor).update(delta);
-        }
+            } else {
+                    ((com.csiit.suumerpractic.lukoicat.prize.Weapon) actor).update(delta);
+                if(player.isFindGun())
+                    actor.remove();
+             }
+            }
     }
 
     private void setMap() {
@@ -144,9 +147,11 @@ public class World extends Stage implements Constant {
         }
     }
 
+
     //coздание оружия
     private void generateWeapon(Weapon weapon) {
         addActor(weapon.makeWeapon(this, CAMERA_WIDTH, CAMERA_HEIGHT));
+
     }
 
     // Передвижение выбранного актера по параметрам

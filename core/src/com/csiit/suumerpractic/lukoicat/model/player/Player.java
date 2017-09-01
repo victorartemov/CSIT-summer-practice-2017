@@ -220,6 +220,10 @@ public class Player extends Actor implements Constant {
 
     }
 
+    public boolean isFindGun(){
+        return findGun;
+    }
+
     private void leftPressed() {
         direction.get(direction.put(Direction.LEFT, true));
     }

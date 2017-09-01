@@ -81,7 +81,6 @@ public class GameScreen implements Screen {
         game.batch.begin();
         game.font.draw(game.batch, "Count life: " + ((Player)world.getActors().get(0)).getCountLife(), 50, 50);
         game.font.draw(game.batch, "C - reincarnate in lykoi-cat", world.getWidth()+ 320, 50);
-        //game.batch.draw(textureButton,  world.getWidth()+ 320, 50);
         game.batch.end();
     }
 

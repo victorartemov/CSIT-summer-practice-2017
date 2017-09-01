@@ -28,7 +28,6 @@ public class MyGame extends Game {
                 InternalFileHandleResolver()));
         batch = new SpriteBatch();
         final String FONT_PATH = "fonts/8bit16.ttf";
-
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(FONT_PATH));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters = FONT_CHARS;
@@ -38,6 +37,7 @@ public class MyGame extends Game {
         generator.dispose();
 
         setScreen(new LoadScreen(this));
+       // setScreen(new FirstScreen(this));
     }
 
     public void render() {
